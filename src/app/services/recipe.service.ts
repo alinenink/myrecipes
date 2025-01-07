@@ -6,11 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class RecipeService {
-  private apiUrl = 'http://localhost:3000/recipes';
-  private apiUrlFav = 'http://localhost:3000/favorites';
-  private apiUrlProfile = 'http://localhost:3000/profile';
-  private apiUrlAchivie = 'http://localhost:3000';
+  // local
+  //private apiUrl = 'http://localhost:3000/recipes';
+  //private apiUrlFav = 'http://localhost:3000/favorites';
+  //private apiUrlProfile = 'http://localhost:3000/profile';
+  //private apiUrlAchivie = 'http://localhost:3000';
 
+  private apiUrl = 'https://myrecipes-x9jv.onrender.com/recipes';
+  private apiUrlFav = 'https://myrecipes-x9jv.onrender.com/favorites';
+  private apiUrlProfile = 'https://myrecipes-x9jv.onrender.com/profile';
+  private apiUrlAchivie = 'https://myrecipes-x9jv.onrender.com/achievements';
 
   constructor(private http: HttpClient) {}
 
@@ -128,7 +133,6 @@ export class RecipeService {
     return this.http.post(`${this.apiUrl}/${recipeId}/reviews`, review);
   }
 
-  
   /**
    * Obtém a lista de achiviements.
    * @returns Observable com todos os achiviements.
