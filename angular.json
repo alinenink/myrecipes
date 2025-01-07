@@ -35,6 +35,7 @@
             ],
             "styles": [
               "src/assets/styles.scss",
+              "src/assets/custom-theme.scss",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": []
@@ -95,11 +96,11 @@
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "sass",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": [
+              "src/assets/styles.scss",
+              "src/assets/custom-theme.scss"
             ],
-            "styles": ["src/assets/styles.scss"],
             "scripts": []
           }
         }
