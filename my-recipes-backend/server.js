@@ -4,6 +4,7 @@ const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
 const rateLimit = require('express-rate-limit');
+const sharp = require("sharp");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,8 +24,29 @@ const limiter = rateLimit({
 
 
 // Middlewares
+const allowedOrigins = [
+  "http://localhost:4200", // Localhost (Frontend)
+  "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // Permitir cookies, se necessário
+};
+
+app.options("*", cors(corsOptions)); // Para suportar requisições pré-flight
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ limit: '500mb', extended: true }));
 app.use(limiter);
 
 // Utility functions
@@ -287,14 +309,16 @@ app.get("/favorites", (req, res) => {
  * POST /favorites
  * Add a recipe to favorites
  */
-app.post("/favorites", (req, res) => {
+app.post("/favorites", async (req, res) => {
   const { id } = req.body;
+
   if (!id) {
     return res.status(400).json({ error: "ID da receita é obrigatório" });
   }
 
   const recipes = readFile(filePath);
   const recipe = recipes.find((r) => r.id === id);
+
   if (!recipe) {
     return res.status(404).json({ error: "Receita não encontrada" });
   }
@@ -304,9 +328,29 @@ app.post("/favorites", (req, res) => {
     return res.status(400).json({ error: "Receita já está nos favoritos" });
   }
 
-  favorites.push(recipe);
+  let compressedImage = "";
+  if (recipe.image) {
+    // Extrai o Base64 e compacta
+    const base64Data = recipe.image.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, "base64");
+
+    const compressedBuffer = await sharp(buffer)
+      .resize({ width: 300 }) // Ajusta a largura
+      .toBuffer();
+
+    compressedImage = `data:image/jpeg;base64,${compressedBuffer.toString("base64")}`;
+  }
+
+  // Adiciona a receita aos favoritos com a imagem compactada
+  const recipeToSave = {
+    ...recipe,
+    image: compressedImage,
+  };
+
+  favorites.push(recipeToSave);
   writeFile(favoritesFilePath, favorites);
-  res.status(201).json({ success: true, data: recipe });
+
+  res.status(201).json({ success: true, data: recipeToSave });
 });
 
 /**

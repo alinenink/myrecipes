@@ -157,38 +157,42 @@ export class FavoritesComponent implements OnInit {
     }
   
 
-  toggleFavorite(recipe: any) {
-    if (!recipe || !recipe.id) {
-      console.error('Invalid recipe object.');
-      return;
+    toggleFavorite(recipe: any): void {
+      if (!recipe || !recipe.id) {
+        console.error('Invalid recipe object.');
+        return;
+      }
+    
+      const previousState = recipe.isFavorite;
+      recipe.isFavorite = !recipe.isFavorite;
+    
+      if (recipe.isFavorite) {
+        // Remove o campo `image` do objeto antes de enviar
+        const { image, ...recipeWithoutImage } = recipe;
+    
+        this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
+          next: () => {
+            console.log(`${recipe.name} favoritada!`);
+          },
+          error: (err) => {
+            console.error(`Erro ao favoritar ${recipe.name}:`, err);
+            recipe.isFavorite = previousState;
+          },
+        });
+      } else {
+        this.recipeService.removeFromFavorites(recipe.id).subscribe({
+          next: () => {
+            console.log(`${recipe.name} desfavoritada!`);
+            this.loadFavorites(); // Atualiza a lista de favoritos
+          },
+          error: (err) => {
+            console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
+            recipe.isFavorite = previousState;
+          },
+        });
+      }
     }
-
-    const previousState = recipe.isFavorite;
-    recipe.isFavorite = !recipe.isFavorite;
-
-    if (recipe.isFavorite) {
-      this.recipeService.addToFavorites(recipe).subscribe({
-        next: () => {
-          console.log(`${recipe.name} favoritada!`);
-        },
-        error: (err) => {
-          console.error(`Erro ao favoritar ${recipe.name}:`, err);
-          recipe.isFavorite = previousState;
-        },
-      });
-    } else {
-      this.recipeService.removeFromFavorites(recipe.id).subscribe({
-        next: () => {
-          console.log(`${recipe.name} desfavoritada!`);
-          this.loadFavorites(); // Atualiza a lista de favoritos
-        },
-        error: (err) => {
-          console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
-          recipe.isFavorite = previousState;
-        },
-      });
-    }
-  }
+    
 
   calculateAverageRating(recipe: any): number {
     if (!recipe.reviews || recipe.reviews.length === 0) {

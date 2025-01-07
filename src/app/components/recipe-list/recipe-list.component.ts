@@ -202,15 +202,19 @@ export class RecipeListComponent implements OnInit {
       console.error('Receita inválida.');
       return;
     }
-
+  
     const currentFavoriteState = recipe.isFavorite;
     recipe.isFavorite = !currentFavoriteState;
-
+  
     if (recipe.isFavorite) {
       this.recipeService.getRecipeById(recipe.id).subscribe({
         next: (fullRecipe) => {
           console.log(fullRecipe);
-          this.recipeService.addToFavorites(fullRecipe).subscribe({
+  
+          // Remove o campo `image` antes de enviar ao backend
+          const { image, ...recipeWithoutImage } = fullRecipe;
+  
+          this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
             next: () => console.log(`${fullRecipe.name} favoritado!`),
             error: (err) => {
               console.error(`Erro ao favoritar ${fullRecipe.name}:`, err);
@@ -233,7 +237,7 @@ export class RecipeListComponent implements OnInit {
       });
     }
   }
-
+  
   viewDetails(id: string): void {
     const formattedCategory = this.category.toLowerCase().replace(/\s+/g, '-');
     this.router.navigate(['/recipes', formattedCategory, id], {

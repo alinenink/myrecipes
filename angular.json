@@ -25,7 +25,8 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/assets/styles.scss",
-              "src/assets/custom-theme.scss"
+              "src/assets/custom-theme.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": []
           },
@@ -76,7 +77,8 @@
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/assets/styles.scss",
-              "src/assets/custom-theme.scss"
+              "src/assets/custom-theme.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
             ],
             "scripts": []
           }
