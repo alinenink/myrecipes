@@ -1,0 +1,44 @@
+/* Backdrop */
+.loader-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  /* Loader Container */
+  .loader {
+    width: 150px;
+    height: 150px;
+  }
+  
+  /* Path Animado */
+  .animated-path {
+    stroke-dasharray: 5000; 
+    stroke-dashoffset: 5000; /* Início da animação */
+    animation: fillRolo 2s cubic-bezier(0.4, 0, 0.2, 1) infinite; /* Animação suave */
+  }
+  
+  .static-path {
+    stroke-dasharray: none; 
+    stroke-width: 45;
+  }
+  
+  @keyframes fillRolo {
+    0% {
+      stroke-dashoffset: 5000; /* Começa vazio */
+    }
+    85% {
+      stroke-dashoffset: 0; /* Preenche completamente */
+    }
+    100% {
+      stroke-dashoffset: 0; /* Mantém preenchido antes de reiniciar */
+    }
+  }
+  

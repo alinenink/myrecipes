@@ -2,20 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecipeService } from '../../services/recipe.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-favorites',
   templateUrl: './favorites.component.html',
   styleUrls: ['./favorites.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoaderComponent],
 })
 export class FavoritesComponent implements OnInit {
+  recipes: any[] = [];
   favorites: any[] = [];
   stars: string[] = [];
   averageRating: number = 0;
+  showModal = false;
+  selectedRecipeId: any;
   category: string | null = null;
   originRoute: string | null = null;
+  loading = true;
+
   profile: [{ name: string; bio: string; email: string; image: string }] = [
     {
       name: '',
@@ -24,6 +30,9 @@ export class FavoritesComponent implements OnInit {
       image: '',
     },
   ];
+
+  modalMessage = '';
+  showModalError: boolean = false;
 
   constructor(
     private recipeService: RecipeService,
@@ -35,12 +44,16 @@ export class FavoritesComponent implements OnInit {
     this.originRoute = this.route.snapshot.queryParamMap.get('origin');
     this.category = this.route.snapshot.paramMap.get('category');
     this.loadFavorites();
-    this.scrollToTop();
+    this.scrollToHeader();
   }
 
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
+  
 
   loadFavorites(): void {
     this.recipeService.getFavorites().subscribe({
@@ -48,7 +61,7 @@ export class FavoritesComponent implements OnInit {
         this.recipeService.getProfileData().subscribe({
           next: (profile) => {
             this.profile = profile;
-  
+
             // Adiciona o atributo `showButtons` aos favoritos
             this.favorites = favorites.map((recipe) => {
               const averageRating = this.calculateAverageRating(recipe);
@@ -56,7 +69,7 @@ export class FavoritesComponent implements OnInit {
               const showButtons =
                 this.profile[0].name.trim().toLowerCase() ===
                 recipe.addedBy.trim().toLowerCase();
-  
+
               return {
                 ...recipe,
                 averageRating,
@@ -65,6 +78,8 @@ export class FavoritesComponent implements OnInit {
                 showButtons, // Adiciona `showButtons`
               };
             });
+
+            this.loadRecipes();
           },
           error: (err) => {
             console.error('Erro ao carregar o perfil:', err);
@@ -76,7 +91,6 @@ export class FavoritesComponent implements OnInit {
       },
     });
   }
-  
 
   editRecipe(id: string): void {
     this.router.navigate(['/edit', id], {
@@ -84,7 +98,64 @@ export class FavoritesComponent implements OnInit {
     });
   }
 
-  confirmDelete(id: string): void {}
+  confirmDelete(id: string) {
+    this.selectedRecipeId = id;
+    this.showModal = true;
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.selectedRecipeId = null;
+  }
+
+  loadRecipes(): void {
+    this.recipeService.getRecipes().subscribe({
+      next: (data: any[]) => {
+        this.recipes = data;
+        this.loading = false;
+      },
+    });
+  }
+
+  deleteRecipe() {
+    if (this.selectedRecipeId) {
+      const recipeToDelete = this.recipes.find(
+        (recipe) => recipe.id === this.selectedRecipeId
+      );
+
+      if (recipeToDelete?.feature) {
+        this.openErrorModal(
+          'This recipe is part of the showcase and cannot be deleted. For assistance, contact us at alinenink@outlook.com.'
+        );
+        return;
+      }
+
+      this.recipeService.deleteRecipe(this.selectedRecipeId).subscribe({
+        next: () => {
+          // Remover da lista de favoritos
+          this.recipeService
+            .removeFromFavorites(this.selectedRecipeId)
+            .subscribe({
+              next: () => {},
+              error: (err) =>
+                console.error('Erro ao desfavoritar a receita:', err),
+            });
+
+          this.showModal = false;
+          this.loadFavorites();
+          console.log(`Receita ${this.selectedRecipeId} deletada com sucesso.`);
+        },
+        error: (err) => console.error('Erro ao excluir receita:', err),
+      });
+    }
+  }
+
+    // Exibe o modal de erro
+    openErrorModal(message: string) {
+      this.modalMessage = message;
+      this.showModalError = true;
+    }
+  
 
   toggleFavorite(recipe: any) {
     if (!recipe || !recipe.id) {
@@ -98,21 +169,21 @@ export class FavoritesComponent implements OnInit {
     if (recipe.isFavorite) {
       this.recipeService.addToFavorites(recipe).subscribe({
         next: () => {
-          console.log(`${recipe.name} favorited!`);
+          console.log(`${recipe.name} favoritada!`);
         },
         error: (err) => {
-          console.error(`Error favoriting ${recipe.name}:`, err);
+          console.error(`Erro ao favoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
         },
       });
     } else {
       this.recipeService.removeFromFavorites(recipe.id).subscribe({
         next: () => {
-          console.log(`${recipe.name} unfavorited!`);
-          this.loadFavorites();
+          console.log(`${recipe.name} desfavoritada!`);
+          this.loadFavorites(); // Atualiza a lista de favoritos
         },
         error: (err) => {
-          console.error(`Error unfavoriting ${recipe.name}:`, err);
+          console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
         },
       });
@@ -123,13 +194,16 @@ export class FavoritesComponent implements OnInit {
     if (!recipe.reviews || recipe.reviews.length === 0) {
       return 0;
     }
-
+  
     const totalRatings = recipe.reviews.reduce(
       (sum: number, review: any) => sum + review.rating,
       0
     );
-    return totalRatings / recipe.reviews.length;
+  
+    return parseFloat((totalRatings / recipe.reviews.length).toFixed(1));
   }
+  
+  
 
   calculateStars(averageRating: number): string[] {
     const stars = [];

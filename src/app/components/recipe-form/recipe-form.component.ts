@@ -21,10 +21,16 @@ export class RecipeFormComponent implements OnInit {
   isEdit: boolean = false;
   showModal = false;
   showSuccessModal = false;
+  showModalInfo = false;
+
   modalMessage = '';
   originRoute: string | null = null; // Para armazenar a origem da navegação
   category: string | null = null;
   recipeId: string | null = null;
+  userName: string = '';
+  userEmail: string = '';
+  isValidName: boolean = true;
+  isValidEmail: boolean = true;
 
   recipe = {
     id: '',
@@ -35,7 +41,10 @@ export class RecipeFormComponent implements OnInit {
     ingredients: [''],
     instructions: [''],
     image: '',
-    addedBy: ''
+    addedBy: '',
+    feature: '',
+    email: '',
+    isApproved: '',
   };
 
   profile: [{ name: string; bio: string; email: string; image: string }] = [
@@ -65,6 +74,14 @@ export class RecipeFormComponent implements OnInit {
     }
 
     this.loadProfile();
+    this.scrollToHeader();
+  }
+
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   loadProfile(): void {
@@ -87,12 +104,33 @@ export class RecipeFormComponent implements OnInit {
 
   onImageUpload(event: Event) {
     const input = event.target as HTMLInputElement;
+
     if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const maxSizeInKB = 500; // Limite de tamanho em KB
+
+      // Verifica o tamanho do arquivo
+      if (file.size > maxSizeInKB * 1024) {
+        this.openErrorModal(
+          `The image size exceeds the limit of ${maxSizeInKB} KB. Please choose a smaller image.`
+        );
+        return;
+      }
+
+      // Converte a imagem para Base64
       const reader = new FileReader();
       reader.onload = () => {
-        this.recipe.image = reader.result as string;
+        const base64String = reader.result as string;
+        this.recipe.image = base64String;
       };
-      reader.readAsDataURL(input.files[0]);
+
+      reader.onerror = () => {
+        this.openErrorModal(
+          `An error occurred while uploading the image. Please try again.`
+        );
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 
@@ -149,24 +187,56 @@ export class RecipeFormComponent implements OnInit {
       return;
     }
 
-    if (this.recipe.ingredients.some((ingredient) => ingredient.length > 10)) {
-      this.openErrorModal('Each ingredient must be up to 10 characters.');
-      return;
-    }
-
     // Salva a receita (caso esteja válida)
     if (this.isEdit) {
+      if (this.recipe.feature) {
+        this.openErrorModal(
+          'This recipe is part of the showcase and cannot be edited. For assistance, contact us at alinenink@outlook.com.'
+        );
+        return;
+      }
+
       this.recipeService
         .updateRecipe(this.recipe.id, this.recipe)
         .subscribe(() => {
           this.openSuccessModal('Recipe updated successfully!');
         });
     } else {
-      this.recipe.addedBy = this.profile[0].name;
-      this.recipeService.addRecipe(this.recipe).subscribe(() => {
-        this.openSuccessModal('Recipe added successfully!');
-      });
+      this.showModalInfo = true;
     }
+  }
+
+  submitUserInfo(): void {
+    this.validateInputs();
+
+    if (!this.isValidName || !this.isValidEmail) {
+      return;
+    }
+
+    this.recipe.addedBy = this.userName;
+    this.recipe.email = this.userEmail;
+    this.recipe.isApproved = 'false';
+
+    this.recipeService.addRecipe(this.recipe).subscribe({
+      next: (sucess) => {
+        this.openSuccessModal(
+          'Sua receita foi enviada para aprovação e estará visível em breve!'
+        );
+        this.showModalInfo = false;
+      },
+      error: (err) => {
+        this.showModalInfo = false;
+        this.openErrorModal(err.error.error);
+      },
+    });
+  }
+
+  validateInputs(): void {
+    const namePattern = /^[a-zA-Z\s]{3,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    this.isValidName = namePattern.test(this.userName);
+    this.isValidEmail = emailPattern.test(this.userEmail);
   }
   // Exibe o modal de erro
   openErrorModal(message: string) {
@@ -182,8 +252,21 @@ export class RecipeFormComponent implements OnInit {
     // Após fechar o modal, navega para outra tela
     setTimeout(() => {
       this.showModal = false;
-      this.router.navigate(['/']);
+      this.back();
     }, 2000);
+  }
+
+  back() {
+    if (this.originRoute && this.category) {
+      const formattedCategory = this.recipe.category
+        .toLowerCase()
+        .replace(/\s+/g, '-');
+      this.router.navigate([this.originRoute, formattedCategory]);
+    } else if (this.originRoute && !this.category) {
+      this.router.navigate([this.originRoute]);
+    } else {
+      this.router.navigate(['/']);
+    }
   }
 
   cancelAdd() {

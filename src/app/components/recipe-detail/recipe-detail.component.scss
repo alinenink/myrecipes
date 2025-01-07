@@ -1,0 +1,17 @@
+.grid {
+    display: grid;
+  }
+  
+  @media (min-width: 1024px) {
+    .grid-cols-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .grid-cols-1 {
+      justify-items: center; /* Centraliza os itens horizontalmente */
+      align-items: center;  /* Centraliza os itens verticalmente */
+    }
+  }
+  

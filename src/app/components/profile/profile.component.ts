@@ -3,19 +3,20 @@ import { RecipeService } from '../../services/recipe.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LoaderComponent],
 })
 export class ProfileComponent implements OnInit, AfterViewInit {
   recipesCreated: number = 0;
-  favorites: number = 0;
   followers: number = 120;
   following: number = 85;
+  favoritesCount: number = 0;
 
   achievements: any[] = [];
   displayedRecipes: any[] = [];
@@ -23,6 +24,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   progressPercentage: number = 0;
   profilePhoto: string | null = null;
   selectedFile: File | null = null;
+  loading = true;
+
   profile: [{ name: string; bio: string; email: string; image: string }] = [
     {
       name: '',
@@ -33,12 +36,19 @@ export class ProfileComponent implements OnInit, AfterViewInit {
   ];
   imageError: boolean = false;
   showModal = false;
+
   constructor(private recipeService: RecipeService, private router: Router) {}
 
   ngOnInit(): void {
-    this.loadRecipes();
-    this.loadFavorites();
     this.loadProfile();
+    this.scrollToHeader()
+  }
+
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   ngAfterViewInit() {
@@ -53,6 +63,7 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     this.recipeService.getProfileData().subscribe({
       next: (data) => {
         this.profile = data;
+        this.loadRecipes(this.profile[0].name)
       },
       error: (err) => {
         console.error('Erro ao carregar o perfil:', err);
@@ -60,26 +71,36 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     });
   }
 
-  loadFavorites(): void {
-    this.recipeService.getFavorites().subscribe((favorites) => {
-      this.favorites = favorites.filter(
-        (fav) => fav.addedBy === 'Aline Nink'
-      ).length;
+  loadRecipes(user: string): void {
+    // Obtém as receitas associadas ao usuário
+    this.recipeService.getRecipesByUser(user).subscribe({
+      next: (userRecipes) => {
+        // Calcula a quantidade total de receitas criadas pelo usuário
+        this.recipesCreated = userRecipes.length;
+  
+        // Lista de todas as receitas criadas pelo usuário
+        this.allRecipes = userRecipes;
+  
+        // Limita a quantidade de receitas exibidas para 10
+        this.displayedRecipes = userRecipes.slice(0, 10);
+  
+        // Obtém os favoritos e calcula a quantidade
+        this.recipeService.getFavorites().subscribe({
+          next: (favorites) => {
+            this.favoritesCount = favorites.length; // Quantidade de favoritos
+            this.loadAchievements(); // Atualiza as conquistas após carregar receitas e favoritos
+          },
+          error: (err) => {
+            console.error('Erro ao carregar favoritos:', err);
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Erro ao carregar receitas do usuário:', err);
+      },
     });
   }
-
-  loadRecipes(): void {
-    this.recipeService.getRecipes().subscribe((recipes) => {
-      const userRecipes = recipes.filter(
-        (recipe) => recipe.addedBy === 'Aline Nink'
-      );
-      this.recipesCreated = userRecipes.length;
-      this.allRecipes = userRecipes;
-      this.displayedRecipes = userRecipes.slice(0, 10);
-      this.loadAchievements();
-    });
-  }
-
+  
   loadAchievements(): void {
     this.recipeService.getAchievements().subscribe((achievements) => {
       this.achievements = achievements;
@@ -178,6 +199,8 @@ export class ProfileComponent implements OnInit, AfterViewInit {
       this.progressPercentage = Math.round(
         (unlocked / this.achievements.length) * 100
       );
+
+      this.loading = false;
     });
   }
 
@@ -193,8 +216,11 @@ export class ProfileComponent implements OnInit, AfterViewInit {
     this.showModal = true;
   }
 
-  viewAllRecipes(id: any): void {
-    this.router.navigate(['/recipes', id], {
+  viewAllRecipes(id: any, category: string): void {
+    const formattedCategory = category
+    .toLowerCase()
+    .replace(/\s+/g, '-');
+    this.router.navigate(['/recipes', formattedCategory, id], {
       queryParams: { origin: 'profile' },
     });
   }

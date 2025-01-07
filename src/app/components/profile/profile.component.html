@@ -1,85 +1,87 @@
-<div class="main-body min-h-screen bg-gradient-to-b from-beige to-pastel-cream">
-  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
-    <h1 class="text-2xl font-bold tracking-wide text-off-white text-shadow-rosy font-poppins">
+<div class="main-body min-h-screen bg-gray-50 dark:bg-gray-900">
+  <header id="header" class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+    <h1 class="text-3xl font-bold tracking-wide text-off-white text-shadow-rosy font-poppins">
       Profile
     </h1>
   </header>
 
-  <main class="flex-grow flex flex-col justify-center items-center p-6">
-    <div *ngFor="let profile of profile" class="relative m-4 retro-card max-w-2xl bg-pastel-blue">
+  <main class="flex-grow flex flex-col justify-center items-center mt-4">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
 
-      <span class="decorative-top-left"></span>
-      <span class="decorative-top-right"></span>
-      <div class="relative">
-        <img [src]="profile.image" alt="Profile Photo" class="rounded-lg object-cover" />
+      <div *ngFor="let profile of profile" class="m-4 retro-card bg-pastel-blue">
+
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <div class="relative">
+          <img [src]="profile.image" alt="Profile Photo" class="rounded-lg object-cover" />
+        </div>
+        <div class="space-y-4">
+          <h2 class="text-2xl font-bold text-retro-dark">{{ profile.name }}</h2>
+          <p class="text-retro-dark text-base italic mt-2">{{ profile.bio }}</p>
+        </div>
+
+        <div class="mt-6 flex items-center justify-center px-4 py-2">
+          <button class="retro-detail-btn" title="Edit" (click)="openEditProfileModal()">
+            <i class="fa fa-edit mr-2"></i>
+
+            Edit </button>
+        </div>
       </div>
-      <div class="space-y-4">
-        <h2 class="text-2xl font-bold text-retro-dark">{{ profile.name }}</h2>
-        <p class="text-retro-dark text-base italic mt-2">{{ profile.bio }}</p>
-      </div>
 
-      <div class="mt-6 flex items-center justify-center px-4 py-2">
-        <button class="retro-detail-btn" title="Ver Detalhes" (click)="openEditProfileModal()">
-          <i class="fa fa-edit mr-2"></i>
 
-          Editar </button>
+      <div class="stats-container grid gap-4 mt-4 w-full">
+
+        <div class="retro-card-new">
+          <div class="icon-container">
+            <i class="fa fa-utensils text-3xl icon-pastel text-blue"></i>
+          </div>
+
+          <div class="text-right flex flex-col items-end space-y-2">
+            <h3>{{ recipesCreated }}</h3>
+            <p>Recipes Created</p>
+          </div>
+        </div>
+
+        <div class="retro-card-new">
+          <div class="icon-container">
+            <i class="fa fa-heart text-3xl icon-pastel text-pink"></i>
+          </div>
+          <div class="text-right flex flex-col items-end space-y-2">
+            <h3>{{ favoritesCount }}</h3>
+            <p>Favorites</p>
+          </div>
+        </div>
+
+        <div class="retro-card-new">
+
+          <div class="icon-container">
+            <i class="fa fa-users text-3xl icon-pastel text-yellow"></i>
+          </div>
+          <div class="text-right flex flex-col items-end space-y-2">
+            <h3>{{ followers }}</h3>
+            <p>Followers</p>
+          </div>
+        </div>
+
+        <div class="retro-card-new">
+          <div class="icon-container">
+            <i class="fa fa-user-plus text-3xl icon-pastel text-green"></i>
+          </div>
+          <div class="text-right flex flex-col items-end space-y-2">
+            <h3>{{ following }}</h3>
+            <p>Following</p>
+          </div>
+        </div>
       </div>
     </div>
-
-
-    <div class="stats-container grid grid-cols-1 gap-4 mt-4 max-w-2xl w-full">
-
-      <div class="retro-card-new">
-        <div class="icon-container">
-          <i class="fa fa-utensils text-3xl icon-pastel text-blue"></i>
-        </div>
-
-        <div class="text-right">
-          <h3>{{ recipesCreated }}</h3>
-          <p>Recipes Created</p>
-        </div>
-      </div>
-
-      <div class="retro-card-new">
-        <div class="icon-container">
-          <i class="fa fa-heart text-3xl icon-pastel text-pink"></i>
-        </div>
-        <div class="text-right">
-          <h3>{{ favorites }}</h3>
-          <p>Favorites</p>
-        </div>
-      </div>
-
-      <div class="retro-card-new">
-
-        <div class="icon-container">
-          <i class="fa fa-users text-3xl icon-pastel text-yellow"></i>
-        </div>
-        <div class="text-right">
-          <h3>{{ followers }}</h3>
-          <p>Followers</p>
-        </div>
-      </div>
-
-      <div class="retro-card-new">
-        <div class="icon-container">
-          <i class="fa fa-user-plus text-3xl icon-pastel text-green"></i>
-        </div>
-        <div class="text-right">
-          <h3>{{ following }}</h3>
-          <p>Following</p>
-        </div>
-      </div>
-    </div>
-
 
     <!-- Achievements Section -->
-    <div class="achievements mt-6 max-w-2xl w-full p-6 space-y-6">
+    <div class="achievements mt-6 max-w-6xl w-full p-6 space-y-6">
       <h4 class="text-md font-bold text-retro-dark mb-4 text-center">Achievements</h4>
 
       <div class="carousel-hint flex justify-center items-center text-gray-500 text-xs mb-2">
         <i class="fa fa-hand-point-right mr-1"></i>
-        <span>Arraste para o lado para ver mais</span>
+        <span>Swipe to see more</span>
       </div>
 
       <div class="carousel-container relative">
@@ -105,11 +107,11 @@
     </div>
 
 
-    <div class="recipes mt-6 max-w-2xl w-full p-6 space-y-6">
+    <div class="achievements mt-6 max-w-6xl w-full p-6 space-y-6">
       <h4 class="text-md font-bold text-retro-dark mb-4 text-center">Your Recipes</h4>
       <div class="carousel-hint flex justify-center items-center text-gray-500 text-xs mb-2">
         <i class="fa fa-hand-point-right mr-1"></i>
-        <span>Arraste para o lado para ver mais</span>
+        <span>Swipe to see more</span>
       </div>
 
       <div class="carousel-container relative">
@@ -124,7 +126,7 @@
                 {{ recipe.name }}
               </h1>
               <p class=" mt-4 text-xs text-gray-600 italic hover:text-retro-yellow transition duration-200"
-                (click)="viewAllRecipes(recipe.id)">
+                (click)="viewAllRecipes(recipe.id, recipe.category)">
                 Click to view details
               </p>
             </div>
@@ -163,3 +165,5 @@
     </div>
   </div>
 </div>
+
+<app-loader [loading]="loading"></app-loader>

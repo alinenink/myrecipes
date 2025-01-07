@@ -1,4 +1,3 @@
-
 # Projeto Minhas Receitas
 
 Bem-vindo ao **Minhas Receitas**, uma aplicação web full-stack projetada para oferecer uma experiência completa e envolvente para gerenciar receitas, perfis de usuário e conquistas. Este projeto demonstra desenvolvimento avançado de front-end utilizando Angular e um backend robusto construído com Node.js.
@@ -11,6 +10,7 @@ Bem-vindo ao **Minhas Receitas**, uma aplicação web full-stack projetada para 
 - **Gerenciamento de Receitas**:
   - Adicionar, editar, excluir e visualizar receitas.
   - Organizar receitas em categorias como **Sobremesas**, **Pratos Principais**, **Aperitivos**, **Opções Saudáveis**, **Lanches** e **Bebidas**.
+  - Controle para evitar edição ou exclusão de receitas da vitrine.
 
 - **Favoritos**:
   - Marcar receitas como favoritas.
@@ -41,11 +41,12 @@ Bem-vindo ao **Minhas Receitas**, uma aplicação web full-stack projetada para 
   - Operações CRUD (Criar, Ler, Atualizar, Excluir) para receitas, perfil e conquistas.
   - Arquivos JSON utilizados como um banco de dados leve e baseado em arquivos.
 
-- **Uploads de Imagens**:
-  - Funcionalidade de upload de imagem de perfil usando **Multer**.
-
 - **Gerenciamento de Favoritos**:
   - Adicionar e remover receitas da lista de favoritos.
+
+- **Validações de Segurança**:
+  - Controle de limite de adição e avaliações por IP.
+  - Verificação do tamanho de imagens e transformação para Base64.
 
 - **Endpoints**:
   - API RESTful para receitas, conquistas, favoritos e gerenciamento de perfis.
@@ -81,7 +82,6 @@ Bem-vindo ao **Minhas Receitas**, uma aplicação web full-stack projetada para 
 - **Middleware**:
   - **CORS** para requisições cross-origin.
   - **Body Parser** para parsing de corpos de requisições JSON.
-  - **Multer** para gerenciar uploads de arquivos.
 
 ---
 
@@ -106,13 +106,19 @@ Cada componente é altamente personalizado com:
    - `/favorites`: Gerencia as receitas favoritas do usuário.
    - `/profile`: Visualiza e atualiza o perfil do usuário.
    - `/achievements`: Busca e atualiza o progresso das conquistas.
+   - `/recipes/user/:username`: Retorna receitas de um usuário específico.
 
 2. **Gerenciamento de Dados**:
-   - Receitas incluem metadados como `addedBy`, `createdAt` e `category`.
+   - Receitas incluem metadados como `addedBy`, `createdAt`, e `category`.
    - Cálculo dinâmico de conquistas baseado nos dados das receitas.
+   - Campo `isApproved` adicionado para novas receitas.
 
 3. **Tratamento de Erros**:
    - Respostas completas para operações falhas.
+
+4. **Limitações**:
+   - Limite de 3 receitas adicionadas por dia por IP.
+   - Limite de 3 avaliações enviadas por dia por IP.
 
 ---
 
@@ -159,7 +165,7 @@ Cada componente é altamente personalizado com:
 ## **Implantação**
 
 ### Backend
-- Implantado usando **Render**.
+- Deployed usando **Render**.
 - Configurado para servir endpoints da API e gerenciar arquivos estáticos.
 
 ### Frontend
@@ -176,11 +182,12 @@ Cada componente é altamente personalizado com:
 
 Este projeto demonstra a sinergia entre ferramentas modernas de desenvolvimento web e design criativo, tornando-se uma plataforma abrangente e envolvente para gerenciar receitas.
 
-# *Licença
+## **Licença**
 
 Este projeto é distribuído sob a licença MIT, permitindo sua reutilização para fins pessoais, desde que os créditos sejam mantidos.
 
-# * Desenvolvido por
+## **Desenvolvido por**
+
 Este projeto foi criado e desenvolvido por Aline Nink, com foco em fornecer uma experiência web sofisticada e acessível. Para conhecer mais sobre meu trabalho e explorar outros projetos, visite meu portfólio:
 
 [Aline Nink Portfolio](https://alinenink.github.io/alinenink)
@@ -190,7 +197,7 @@ Este projeto foi criado e desenvolvido por Aline Nink, com foco em fornecer uma 
 
 # My Recipes Project
 
-Welcome to **My Recipes**, a full-stack web application designed to offer a complete and engaging experience for managing recipes, user profiles, and achievements. This project demonstrates advanced frontend development using Angular and a robust backend built with Node.js.
+Welcome to **My Recipes**, a full-stack web application designed to provide a complete and engaging experience for managing recipes, user profiles, and achievements. This project demonstrates advanced front-end development using Angular and a robust backend built with Node.js.
 
 ---
 
@@ -200,21 +207,22 @@ Welcome to **My Recipes**, a full-stack web application designed to offer a comp
 - **Recipe Management**:
   - Add, edit, delete, and view recipes.
   - Organize recipes into categories such as **Desserts**, **Main Dishes**, **Appetizers**, **Healthy Options**, **Snacks**, and **Drinks**.
-  
+  - Control to prevent editing or deleting featured recipes.
+
 - **Favorites**:
   - Mark recipes as favorites.
   - View and manage a personalized list of favorite recipes.
 
 - **User Profile**:
   - Upload profile pictures with live preview.
-  - Manage user information including name, email, and bio.
+  - Manage user information, including name, email, and bio.
 
 - **Achievements**:
   - Dynamic achievement system with categories and progress tracking.
-  - Gamified experience with unlocked achievements displayed prominently.
+  - Gamified experience with unlocked achievements prominently displayed.
 
 - **Responsive Design**:
-  - Optimized for mobile-first experience.
+  - Optimized for a mobile-first experience.
   - Seamless adaptation to different screen sizes using **CSS Grid** and **Flexbox**.
 
 - **Interactive Carousels**:
@@ -227,14 +235,15 @@ Welcome to **My Recipes**, a full-stack web application designed to offer a comp
 
 ### **Backend (Node.js)**
 - **Data Management**:
-  - CRUD operations (Create, Read, Update, Delete) for recipes, profile, and achievements.
+  - CRUD operations (Create, Read, Update, Delete) for recipes, profiles, and achievements.
   - JSON files used as a lightweight, file-based database.
-
-- **Image Uploads**:
-  - Profile image upload functionality using **Multer**.
 
 - **Favorites Management**:
   - Add and remove recipes from the favorites list.
+
+- **Security Validations**:
+  - Limit addition and reviews by IP.
+  - Validate image size and convert to Base64.
 
 - **Endpoints**:
   - RESTful API endpoints for recipes, achievements, favorites, and profile management.
@@ -250,7 +259,7 @@ Welcome to **My Recipes**, a full-stack web application designed to offer a comp
 
 - **Styling**:
   - **SCSS**: Custom styles without reliance on external UI libraries.
-  - **CSS Grid and Flexbox**: Used extensively for layout design.
+  - **CSS Grid and Flexbox**: Extensively used for layout design.
   - **Tailwind CSS**: Applied for responsive utilities and design consistency.
 
 - **Icons**:
@@ -270,7 +279,6 @@ Welcome to **My Recipes**, a full-stack web application designed to offer a comp
 - **Middleware**:
   - **CORS** for cross-origin requests.
   - **Body Parser** for parsing JSON request bodies.
-  - **Multer** for handling file uploads.
 
 ---
 
@@ -293,15 +301,21 @@ Each component is highly customized with:
 1. **API Endpoints**:
    - `/recipes`: Full CRUD for recipes.
    - `/favorites`: Manage the user's favorite recipes.
-   - `/profile`: View and update user profile.
+   - `/profile`: View and update the user profile.
    - `/achievements`: Fetch and update achievement progress.
+   - `/recipes/user/:username`: Returns recipes by a specific user.
 
 2. **Data Handling**:
    - Recipes include metadata such as `addedBy`, `createdAt`, and `category`.
    - Dynamic calculation of achievements based on recipe data.
+   - `isApproved` field added for new recipes.
 
 3. **Error Handling**:
    - Comprehensive error responses for failed operations.
+
+4. **Limits**:
+   - Maximum of 3 recipes added per day per IP.
+   - Maximum of 3 reviews submitted per day per IP.
 
 ---
 
@@ -365,12 +379,16 @@ Each component is highly customized with:
 
 This project demonstrates the synergy of modern web development tools and creative design, making it a comprehensive and engaging platform for managing recipes.
 
-## **License
+---
 
-This project is licensed under the MIT License, which permits reuse for personal, provided that proper credit is given. 
+## **License**
 
-# * Developed by
+This project is licensed under the MIT License, permitting its reuse for personal purposes, provided proper credit is given.
 
-This project was created and developed by Aline Nink, with a focus on delivering a sophisticated and accessible web experience. To learn more about my work and explore other projects, visit my portfolio:
+---
+
+## **Developed by**
+
+This project was created and developed by Aline Nink, focusing on delivering a sophisticated and accessible web experience. To learn more about my work and explore other projects, visit my portfolio:
 
 [Aline Nink Portfolio](https://alinenink.github.io/alinenink)

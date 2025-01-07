@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const multer = require("multer");
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +13,6 @@ const filePath = "./recipes.json";
 const favoritesFilePath = "./favorites.json";
 const profilePath = "./profile.json";
 const achievementsFilePath = "./achievements.json";
-
 
 // Middlewares
 app.use(bodyParser.json());
@@ -51,20 +50,16 @@ ensureFileExists(filePath, []);
 ensureFileExists(favoritesFilePath, []);
 ensureFileExists(profilePath, { photo: null });
 
-// Multer configuration for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
-    cb(null, uploadDir);
+// Limite de 3 avaliações e receitas por dia por IP
+const recipeLimiter  = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000, // 24 horas
+  max: 3, // Máximo de 3 requisições
+  message: {
+    error: 'You have reached the daily limit for reviews. Please try again tomorrow.',
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
+  standardHeaders: true, // Retorna informações no header `RateLimit-*`
+  legacyHeaders: false, // Desativa cabeçalhos `X-RateLimit-*`
 });
-const upload = multer({ storage });
 
 // Profile Endpoints
 /**
@@ -117,20 +112,46 @@ app.get("/recipes", (req, res) => {
 app.get("/recipes/:id", (req, res) => {
   const recipes = readFile(filePath);
   const recipe = recipes.find((r) => r.id === req.params.id);
-  recipe ? res.json(recipe) : res.status(404).json({ error: "Recipe not found" });
+  recipe
+    ? res.json(recipe)
+    : res.status(404).json({ error: "Recipe not found" });
 });
 
 /**
  * POST /recipes
  * Add a new recipe
  */
-app.post("/recipes", (req, res) => {
-  const { name, category, time, servings, ingredients, instructions, image, addedBy, reviews } = req.body;
-  if (!name || !category || !time || !servings || !ingredients || !instructions || !addedBy) {
-    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+app.post("/recipes", recipeLimiter, (req, res) => {
+  const {
+    name,
+    category,
+    time,
+    servings,
+    ingredients,
+    instructions,
+    image,
+    addedBy,
+    email,
+    isApproved,
+  } = req.body;
+
+  // Verificação de campos obrigatórios
+  if (
+    !name ||
+    !category ||
+    !time ||
+    !servings ||
+    !ingredients ||
+    !instructions ||
+    !addedBy ||
+    !email
+  ) {
+    return res.status(400).json({ error: "All fields are required." });
   }
 
   const recipes = readFile(filePath);
+
+  // Nova receita
   const newRecipe = {
     id: `${Date.now()}`,
     name,
@@ -141,13 +162,44 @@ app.post("/recipes", (req, res) => {
     instructions,
     image: image || "",
     addedBy,
-    reviews: reviews || []
+    email,
+    isApproved: isApproved || false, // Padrão como false
+    reviews: [],
   };
 
+  // Adiciona a nova receita ao arquivo
   recipes.push(newRecipe);
   writeFile(filePath, recipes);
+
   res.status(201).json({ success: true, data: newRecipe });
 });
+
+// PUT /recipes/:id
+app.put('/recipes/:id', (req, res) => {
+  const { id } = req.params; // ID da receita
+  const updatedRecipe = req.body; // Novo objeto de receita enviado pelo cliente
+
+  // Lê o arquivo de receitas
+  const recipes = readFile(filePath);
+
+  // Encontra o índice da receita com o ID correspondente
+  const recipeIndex = recipes.findIndex((recipe) => recipe.id === id);
+
+  if (recipeIndex === -1) {
+    // Caso a receita não seja encontrada
+    return res.status(404).json({ error: 'Recipe not found' });
+  }
+
+  // Substitui o objeto existente pelo novo
+  recipes[recipeIndex] = { ...recipes[recipeIndex], ...updatedRecipe };
+
+  // Salva as alterações no arquivo JSON
+  writeFile(filePath, recipes);
+
+  // Retorna a receita atualizada como resposta
+  res.status(200).json({ success: true, data: recipes[recipeIndex] });
+});
+
 
 /**
  * DELETE /recipes/:id
@@ -162,6 +214,55 @@ app.delete("/recipes/:id", (req, res) => {
   writeFile(filePath, updatedRecipes);
   res.status(204).send();
 });
+
+
+/**
+ * POST /recipes/:recipeId/reviews
+ * Add a review to a specific recipe
+ * Returns the recipe ID after adding the review
+ */
+app.post("/recipes/:recipeId/reviews", recipeLimiter , (req, res) => {
+  const { recipeId } = req.params;
+  const { user, rating, comment } = req.body;
+
+  if (!user || !rating || !comment) {
+    return res.status(400).json({ error: "All fields (user, rating, comment) are required." });
+  }
+
+  const recipes = readFile(filePath);
+  const recipe = recipes.find((r) => r.id === recipeId);
+
+  if (!recipe) {
+    return res.status(404).json({ error: "Recipe not found." });
+  }
+
+  if (!recipe.reviews) {
+    recipe.reviews = [];
+  }
+
+  const newReview = { user, rating, comment, createdAt: new Date().toISOString() };
+  recipe.reviews.push(newReview);
+
+  writeFile(filePath, recipes);
+
+  res.status(201).json({ recipeId: recipe.id });
+});
+
+// Endpoint para obter todas as receitas de um usuário específico
+app.get('/recipes/user/:username', (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const recipes = readFile(filePath); // Lê todas as receitas do arquivo JSON
+    const userRecipes = recipes.filter((recipe) => recipe.addedBy === username);
+
+    res.status(200).json(userRecipes); // Retorna as receitas do usuário
+  } catch (err) {
+    console.error('Erro ao obter receitas por usuário:', err);
+    res.status(500).json({ error: 'Erro ao obter receitas por usuário' });
+  }
+});
+
 
 // Favorites Endpoints
 /**
@@ -212,7 +313,6 @@ app.delete("/favorites/:id", (req, res) => {
   res.status(200).json({ message: "Favorito removido com sucesso" });
 });
 
-
 // Endpoint para obter todas as conquistas
 app.get("/achievements", (req, res) => {
   try {
@@ -236,7 +336,6 @@ app.get("/achievements/:name", (req, res) => {
     res.status(404).json({ error: "Conquista não encontrada" });
   }
 });
-
 
 // Start server
 

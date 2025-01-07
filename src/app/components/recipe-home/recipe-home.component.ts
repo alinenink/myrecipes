@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   standalone: true,
@@ -20,8 +21,15 @@ export class RecipeHomeComponent implements OnInit {
 
   ngOnInit() {
     this.fetchRecipes();
+    this.scrollToHeader();
   }
 
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
   // Obter receitas do backend
   fetchRecipes() {
     this.recipeService.getRecipes().subscribe({
@@ -39,7 +47,7 @@ export class RecipeHomeComponent implements OnInit {
     if (confirm('Tem certeza de que deseja excluir esta receita?')) {
       this.recipeService.deleteRecipe(id).subscribe({
         next: () => {
-          this.recipes = this.recipes.filter((recipe) => recipe.id !== id); 
+          this.recipes = this.recipes.filter((recipe) => recipe.id !== id);
         },
         error: (err) => {
           console.error('Erro ao excluir receita:', err);
@@ -53,6 +61,8 @@ export class RecipeHomeComponent implements OnInit {
   }
 
   navigateTo(category: string) {
-    this.router.navigate(['/details', category], { queryParams: { origin: 'home' } });
+    this.router.navigate(['/details', category], {
+      queryParams: { origin: 'home' },
+    });
   }
 }

@@ -1,11 +1,9 @@
-<div class="main-body min-h-screen bg-gray-5 flex flex-col">
+<div class="main-body min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
   <!-- Header -->
-  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+  <header id="header" class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
     <!-- Título Principal -->
     <h1 class="header-title">My</h1>
     <h2 class="header-subtitle">Recipes</h2>
-
-    <!-- Linha Decorativa com Ícone -->
     <div class="decorative-elements">
       <span class="decorative-line"></span>
       <i class="fa fa-utensils decorative-icon"></i>
@@ -13,10 +11,9 @@
     </div>
   </header>
 
-
   <!-- Main Content -->
-  <main class=" flex flex-col items-center mt-4">
-    <!-- Botão "Add Recipes" -->
+  <main class="flex-grow flex flex-col items-center mt-4">
+    <!-- Conteúdo do Main -->
     <button
       class="retro-btn flex items-center gap-4 px-8 py-4 border-4 rounded-full shadow-lg hover:scale-105 transition-all"
       [routerLink]="['/add']">
@@ -26,8 +23,6 @@
       </div>
       <span class="text-retro-dark text-lg font-semibold tracking-wide">Add Recipes</span>
     </button>
-
-    <!-- Cards -->
     <div class="mb-2 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 w-full max-w-4xl px-4">
       <!-- Card 1: Desserts -->
       <button class="retro-card bg-pastel-pink" (click)="navigateTo('desserts')">

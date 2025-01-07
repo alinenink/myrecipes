@@ -10,11 +10,7 @@
       "1 cup of sugar",
       "1/2 cup of cocoa powder"
     ],
-    "instructions": [
-      "Mix dry ingredients.",
-      "Add eggs.",
-      "Bake."
-    ],
+    "instructions": ["Mix dry ingredients.", "Add eggs.", "Bake."],
     "image": "http://localhost:3000/images/cake.png",
     "reviews": [
       {
@@ -36,9 +32,16 @@
         "user": "Anonymous",
         "rating": 5,
         "comment": "Really good recipe!"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "createdAt": "2025-01-07T13:49:48.958Z"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "2",
@@ -51,10 +54,7 @@
       "1 cup of sugar",
       "1 tsp of vanilla extract"
     ],
-    "instructions": [
-      "Mix all ingredients.",
-      "Freeze for 4 hours."
-    ],
+    "instructions": ["Mix all ingredients.", "Freeze for 4 hours."],
     "image": "http://localhost:3000/images/icecream.png",
     "reviews": [
       {
@@ -73,7 +73,8 @@
         "comment": "A bit too sweet."
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "3",
@@ -81,16 +82,8 @@
     "category": "Main Dishes",
     "time": "45",
     "servings": "4",
-    "ingredients": [
-      "4 chicken breasts",
-      "2 tbsp olive oil",
-      "Salt",
-      "Pepper"
-    ],
-    "instructions": [
-      "Season chicken.",
-      "Grill for 20 minutes each side."
-    ],
+    "ingredients": ["4 chicken breasts", "2 tbsp olive oil", "Salt", "Pepper"],
+    "instructions": ["Season chicken.", "Grill for 20 minutes each side."],
     "image": "http://localhost:3000/images/chicken.png",
     "reviews": [
       {
@@ -104,7 +97,8 @@
         "comment": "Great flavor, slightly overcooked."
       }
     ],
-    "addedBy": "John Smith"
+    "addedBy": "John Smith",
+    "feature": "true"
   },
   {
     "id": "4",
@@ -133,9 +127,17 @@
         "user": "Jack",
         "rating": 4.5,
         "comment": "Loved the rich sauce."
+      },
+      {
+        "id": "1736255240329",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:07:20.329Z"
       }
     ],
-    "addedBy": "Mary Johnson"
+    "addedBy": "Mary Johnson",
+    "feature": "true"
   },
   {
     "id": "5",
@@ -161,7 +163,8 @@
         "comment": "Great party snack!"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "6",
@@ -169,15 +172,8 @@
     "category": "Appetizers",
     "time": "20",
     "servings": "4",
-    "ingredients": [
-      "1 baguette",
-      "2 tbsp butter",
-      "2 cloves of garlic"
-    ],
-    "instructions": [
-      "Spread garlic butter on bread.",
-      "Bake for 10 minutes."
-    ],
+    "ingredients": ["1 baguette", "2 tbsp butter", "2 cloves of garlic"],
+    "instructions": ["Spread garlic butter on bread.", "Bake for 10 minutes."],
     "image": "http://localhost:3000/images/garlic.png",
     "reviews": [
       {
@@ -186,7 +182,8 @@
         "comment": "Perfect with pasta!"
       }
     ],
-    "addedBy": "Alice Brown"
+    "addedBy": "Alice Brown",
+    "feature": "true"
   },
   {
     "id": "7",
@@ -212,7 +209,8 @@
         "comment": "Refreshing and delightful!"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "8",
@@ -220,15 +218,8 @@
     "category": "Drinks",
     "time": "5",
     "servings": "1",
-    "ingredients": [
-      "1 cup of strawberries",
-      "1 cup of milk",
-      "1 tbsp honey"
-    ],
-    "instructions": [
-      "Blend all ingredients.",
-      "Serve chilled."
-    ],
+    "ingredients": ["1 cup of strawberries", "1 cup of milk", "1 tbsp honey"],
+    "instructions": ["Blend all ingredients.", "Serve chilled."],
     "image": "http://localhost:3000/images/strawberry.png",
     "reviews": [
       {
@@ -237,7 +228,8 @@
         "comment": "Perfect breakfast drink!"
       }
     ],
-    "addedBy": "Michael Davis"
+    "addedBy": "Michael Davis",
+    "feature": "true"
   },
   {
     "id": "9",
@@ -250,11 +242,7 @@
       "1/2 cup of cherry tomatoes",
       "1/4 cup of parsley"
     ],
-    "instructions": [
-      "Cook quinoa.",
-      "Mix with vegetables.",
-      "Serve chilled."
-    ],
+    "instructions": ["Cook quinoa.", "Mix with vegetables.", "Serve chilled."],
     "image": "http://localhost:3000/images/quinoasalad.png",
     "reviews": [
       {
@@ -263,7 +251,8 @@
         "comment": "Healthy and tasty!"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "10",
@@ -271,16 +260,8 @@
     "category": "Healthy Options",
     "time": "10",
     "servings": "1",
-    "ingredients": [
-      "1 slice of bread",
-      "1/2 avocado",
-      "Salt"
-    ],
-    "instructions": [
-      "Toast bread.",
-      "Spread avocado.",
-      "Sprinkle salt."
-    ],
+    "ingredients": ["1 slice of bread", "1/2 avocado", "Salt"],
+    "instructions": ["Toast bread.", "Spread avocado.", "Sprinkle salt."],
     "image": "http://localhost:3000/images/avocado.png",
     "reviews": [
       {
@@ -289,7 +270,8 @@
         "comment": "Simple and delicious!"
       }
     ],
-    "addedBy": "Sophia Wilson"
+    "addedBy": "Sophia Wilson",
+    "feature": "true"
   },
   {
     "id": "11",
@@ -302,10 +284,7 @@
       "2 slices of ham",
       "1 slice of cheese"
     ],
-    "instructions": [
-      "Layer ingredients between bread slices.",
-      "Serve."
-    ],
+    "instructions": ["Layer ingredients between bread slices.", "Serve."],
     "image": "http://localhost:3000/images/hamsandwich.png",
     "reviews": [
       {
@@ -317,9 +296,40 @@
         "user": "Emma",
         "rating": 5,
         "comment": "Perfect for a quick lunch!"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T18:18:28.498Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T18:18:33.427Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T18:18:38.712Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T18:18:42.284Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T18:18:46.117Z"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "12",
@@ -353,7 +363,8 @@
         "comment": "Great dessert option."
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "13",
@@ -385,9 +396,48 @@
         "user": "Olivia",
         "rating": 4,
         "comment": "A bit heavy but tasty!"
+      },
+      {
+        "id": "1736255271616",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:07:51.616Z"
+      },
+      {
+        "id": "1736255339610",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAAAAAAAAA",
+        "createdAt": "2025-01-07T13:08:59.610Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "createdAt": "2025-01-07T13:18:38.016Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:23:11.407Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:28:22.450Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "Teste final aaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:28:43.506Z"
       }
     ],
-    "addedBy": "Lucas Brown"
+    "addedBy": "Lucas Brown",
+    "feature": "true"
   },
   {
     "id": "14",
@@ -419,7 +469,8 @@
         "comment": "Great for parties!"
       }
     ],
-    "addedBy": "Sophia Johnson"
+    "addedBy": "Sophia Johnson",
+    "feature": "true"
   },
   {
     "id": "15",
@@ -452,7 +503,8 @@
         "comment": "Too sweet for my taste."
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "16",
@@ -485,7 +537,8 @@
         "comment": "Very refreshing!"
       }
     ],
-    "addedBy": "Emma White"
+    "addedBy": "Emma White",
+    "feature": "true"
   },
   {
     "id": "17",
@@ -493,11 +546,7 @@
     "category": "Snacks",
     "time": "10",
     "servings": "2",
-    "ingredients": [
-      "2 tortillas",
-      "1 cup of shredded cheese",
-      "Butter"
-    ],
+    "ingredients": ["2 tortillas", "1 cup of shredded cheese", "Butter"],
     "instructions": [
       "Heat tortilla with cheese.",
       "Fold and cook until golden.",
@@ -516,7 +565,8 @@
         "comment": "Great for a snack."
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "18",
@@ -524,15 +574,8 @@
     "category": "Snacks",
     "time": "10",
     "servings": "4",
-    "ingredients": [
-      "Carrot sticks",
-      "Celery sticks",
-      "1 cup of hummus"
-    ],
-    "instructions": [
-      "Slice carrots and celery.",
-      "Serve with hummus."
-    ],
+    "ingredients": ["Carrot sticks", "Celery sticks", "1 cup of hummus"],
+    "instructions": ["Slice carrots and celery.", "Serve with hummus."],
     "image": "http://localhost:3000/images/veggiesticks.png",
     "reviews": [
       {
@@ -546,7 +589,8 @@
         "comment": "Could use more flavor."
       }
     ],
-    "addedBy": "Michael Green"
+    "addedBy": "Michael Green",
+    "feature": "true"
   },
   {
     "id": "19",
@@ -578,7 +622,8 @@
         "comment": "Tasty and easy!"
       }
     ],
-    "addedBy": "Aline Nink"
+    "addedBy": "Aline Nink",
+    "feature": "true"
   },
   {
     "id": "20",
@@ -586,10 +631,7 @@
     "category": "Snacks",
     "time": "5",
     "servings": "1",
-    "ingredients": [
-      "2 slices of bread",
-      "2 tbsp peanut butter"
-    ],
+    "ingredients": ["2 slices of bread", "2 tbsp peanut butter"],
     "instructions": [
       "Spread peanut butter on one slice.",
       "Top with the other slice.",
@@ -608,6 +650,7 @@
         "comment": "Simple but good!"
       }
     ],
-    "addedBy": "Oliver Brown"
+    "addedBy": "Oliver Brown",
+    "feature": "true"
   }
 ]

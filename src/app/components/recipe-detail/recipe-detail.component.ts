@@ -3,13 +3,14 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { RecipeService } from '../../services/recipe.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.scss'],
   standalone: true,
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule, LoaderComponent],
 })
 export class RecipeDetailComponent implements OnInit {
   recipe: any = null;
@@ -18,8 +19,11 @@ export class RecipeDetailComponent implements OnInit {
   averageRating: any;
   stars: string[] = [];
   category: string | null = null;
-  originRoute: string | null = null; 
+  originRoute: string | null = null;
   commentError: any;
+  showModal = false;
+  modalMessage: string | null = null;
+  loading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,13 +39,21 @@ export class RecipeDetailComponent implements OnInit {
     if (recipeId) {
       this.loadRecipe(recipeId);
     }
+    this.scrollToHeader()
+  }
+
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   loadRecipe(id: string): void {
     this.recipeService.getRecipeById(id).subscribe({
       next: (data) => {
         this.recipe = data;
-        this.calculateAverageRating(); 
+        this.calculateAverageRating();
       },
       error: (err) => {
         console.error('Erro ao carregar receita:', err);
@@ -78,7 +90,7 @@ export class RecipeDetailComponent implements OnInit {
       rating -= 1;
     }
 
-    console.log(stars);
+    this.loading = false;
     return stars;
   }
 
@@ -99,11 +111,13 @@ export class RecipeDetailComponent implements OnInit {
     this.recipeService.addReview(this.recipe.id, review).subscribe({
       next: (updatedRecipe) => {
         this.recipe = updatedRecipe;
-        this.calculateAverageRating();
+        this.loadRecipe(updatedRecipe.recipeId);
+
         this.newComment = '';
         this.newRating = 5;
       },
       error: (err) => {
+        this.openErrorModal(err.error.error);
         console.error('Erro ao enviar avaliação:', err);
       },
     });
@@ -118,11 +132,19 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   goBack() {
-    if (!this.category) {
-      this.router.navigate([this.originRoute])
+    if (!this.category || (this.category && this.originRoute === 'profile')) {
+      this.router.navigate([this.originRoute]);
+    } else {
+      this.router.navigate(['/details', this.category], {
+        queryParams: { origin: this.originRoute },
+      });
     }
-    this.router.navigate(['/details', this.category], {
-      queryParams: { origin: this.originRoute },
-    });
   }
+
+    // Exibe o modal de erro
+    openErrorModal(message: string) {
+      this.modalMessage = message;
+      this.showModal = true;
+    }
+  
 }

@@ -8,4 +8,5 @@ import { FooterComponent } from './components/footer/footer.component';
   template: '<div class="main-body">  <router-outlet></router-outlet> <app-footer></app-footer> </div>',
   imports: [RouterOutlet, FooterComponent],
 })
-export class AppComponent {}
+export class AppComponent {
+}

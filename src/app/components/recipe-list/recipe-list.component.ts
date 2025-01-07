@@ -2,22 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../../services/recipe.service';
 import { CommonModule } from '@angular/common';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   selector: 'app-recipe-list',
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.scss'],
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LoaderComponent],
 })
 export class RecipeListComponent implements OnInit {
   recipes: any[] = [];
-  category: string | null = null;
+  category: string | any;
+  formattedCategory: any;
   originRoute: string | null = null;
   showModal: boolean = false;
-  selectedRecipeId: string | null = null;
+  showModalEdit: boolean = false;
+  selectedRecipeId: any;
   stars: string[] = [];
-  averageRating: number = 0;
+  averageRating: any;
   profile: [{ name: string; bio: string; email: string; image: string }] = [
     {
       name: '',
@@ -26,7 +29,8 @@ export class RecipeListComponent implements OnInit {
       image: '',
     },
   ];
-
+  modalMessage = '';
+  loading = true;
   constructor(
     private recipeService: RecipeService,
     private route: ActivatedRoute,
@@ -37,7 +41,22 @@ export class RecipeListComponent implements OnInit {
     // Obtém a origem da navegação pelos parâmetros de consulta
     this.originRoute = this.route.snapshot.queryParamMap.get('origin');
     this.category = this.route.snapshot.paramMap.get('category');
+    const convertToCamelCase = (slug: string): string => {
+      return slug
+        .split('-')
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+    };
+    this.formattedCategory = convertToCamelCase(this.category);
     this.loadProfile();
+    this.scrollToHeader();
+  }
+
+  scrollToHeader(): void {
+    const headerElement = document.getElementById('header');
+    if (headerElement) {
+      headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   loadProfile(): void {
@@ -57,22 +76,27 @@ export class RecipeListComponent implements OnInit {
       next: (data: any[]) => {
         this.recipeService.getFavorites().subscribe({
           next: (favorites: any[]) => {
-            this.recipes = this.category
+            this.recipes = this.formattedCategory
               ? data.filter(
                   (recipe) =>
                     recipe.category.toLowerCase() ===
-                    this.category!.toLowerCase()
+                    this.formattedCategory!.toLowerCase()
                 )
               : data;
 
             this.recipes.forEach((recipe) => {
-              recipe.isFavorite = favorites.some((fav) => fav.id === recipe.id); 
+              recipe.isFavorite = favorites.some((fav) => fav.id === recipe.id);
               recipe.stars = this.calculateAverageRating(recipe);
 
               recipe.showButtons =
                 this.profile[0].name.trim().toLowerCase() ===
                 recipe.addedBy.trim().toLowerCase();
+
+              this.stars = this.calculateStars();
             });
+
+            this.recipes = this.recipes.filter((item) => !item.isApproved);
+            this.loading = false;
           },
           error: (err) => console.error('Erro ao carregar favoritos:', err),
         });
@@ -82,19 +106,19 @@ export class RecipeListComponent implements OnInit {
   }
 
   calculateAverageRating(recipe: any): void {
-    if (recipe && recipe.reviews.length > 0) {
-      const totalRatings = recipe.reviews.reduce(
-        (sum: number, review: any) => sum + review.rating,
-        0
-      );
+    const totalRatings = recipe.reviews.reduce(
+      (sum: number, review: any) => sum + review.rating,
+      0
+    );
 
-      const numberOfReviews = recipe.reviews.length;
+    const numberOfReviews = recipe.reviews.length;
 
-      this.averageRating =
-        numberOfReviews > 0 ? totalRatings / numberOfReviews : 0;
+    this.averageRating =
+      numberOfReviews > 0
+        ? parseFloat((totalRatings / numberOfReviews).toFixed(1))
+        : 0;
 
-      this.stars = this.calculateStars();
-    }
+    return this.averageRating;
   }
 
   calculateStars(): string[] {
@@ -123,15 +147,37 @@ export class RecipeListComponent implements OnInit {
 
   closeModal() {
     this.showModal = false;
+    this.showModalEdit = false;
     this.selectedRecipeId = null;
   }
 
   deleteRecipe() {
     if (this.selectedRecipeId) {
+      const recipeToDelete = this.recipes.find(
+        (recipe) => recipe.id === this.selectedRecipeId
+      );
+
+      if (recipeToDelete?.feature) {
+        this.openErrorModal(
+          'This recipe is part of the showcase and cannot be deleted. For assistance, contact us at alinenink@outlook.com.'
+        );
+        return;
+      }
+
       this.recipeService.deleteRecipe(this.selectedRecipeId).subscribe({
         next: () => {
+          // Remover da lista de favoritos
+          this.recipeService
+            .removeFromFavorites(this.selectedRecipeId)
+            .subscribe({
+              next: () => {},
+              error: (err) =>
+                console.error('Erro ao desfavoritar a receita:', err),
+            });
+
           this.showModal = false;
           this.loadRecipesWithButtons();
+          console.log(`Receita ${this.selectedRecipeId} deletada com sucesso.`);
         },
         error: (err) => console.error('Erro ao excluir receita:', err),
       });
@@ -139,9 +185,16 @@ export class RecipeListComponent implements OnInit {
   }
 
   editRecipe(id: string) {
-    this.router.navigate(['/edit', id, this.category], {
+    const formattedCategory = this.category.toLowerCase().replace(/\s+/g, '-');
+    this.router.navigate(['/edit', id, formattedCategory], {
       queryParams: { origin: 'details' },
     });
+  }
+
+  // Exibe o modal de erro
+  openErrorModal(message: string) {
+    this.modalMessage = message;
+    this.showModalEdit = true;
   }
 
   toggleFavorite(recipe: any): void {
@@ -182,7 +235,8 @@ export class RecipeListComponent implements OnInit {
   }
 
   viewDetails(id: string): void {
-    this.router.navigate(['/recipes', this.category, id], {
+    const formattedCategory = this.category.toLowerCase().replace(/\s+/g, '-');
+    this.router.navigate(['/recipes', formattedCategory, id], {
       queryParams: { origin: 'details' },
     });
   }

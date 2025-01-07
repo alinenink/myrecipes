@@ -403,9 +403,8 @@ header {
 .image-container {
   position: relative;
   width: 175px;
-  height: 250px;
-  margin: 0 auto 1rem;
-  top: 35px;
+  height: auto;
+  margin: 0 auto;
 }
 
 .favorite-btn {
@@ -928,8 +927,7 @@ sm:grid-cols-2 {
       }
 
       .modal-title {
-        font-family: "Dancing Script", cursive;
-        font-size: 1.5rem;
+        font-size: 1rem;
         color: #8b5e34;
         margin-bottom: 20px;
       }
@@ -1094,9 +1092,11 @@ button.send-btn:hover {
 }
 
 .detail-button-container {
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   text-align: center;
-  margin-top: -20px;
-  z-index: 20;
+  margin-top: 2em;
 }
 
 .retro-detail-btn {
@@ -1449,3 +1449,11 @@ button.send-btn:hover {
 .retro-card-new:hover .icon-pastel {
   color: #6d6a75; /* Tom pastel mais escuro no hover */
 }
+
+.break-words {
+  word-wrap: break-word; /* Para navegadores mais antigos */
+  overflow-wrap: break-word; /* Método moderno */
+  word-break: break-word; /* Suporte adicional */
+  white-space: normal; /* Garante que o texto possa quebrar linhas */
+}
+

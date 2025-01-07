@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: '', component: RecipeHomeComponent }, 
   { path: 'add', component: RecipeFormComponent }, 
   { path: 'edit/:id/:category', component: RecipeFormComponent }, 
+  { path: 'edit/:id', component: RecipeFormComponent }, 
   { path: 'details/:category', component: RecipeListComponent }, 
   { path: 'favorites', component: FavoritesComponent },
   { path: 'profile', component: ProfileComponent },

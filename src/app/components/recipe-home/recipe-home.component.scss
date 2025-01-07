@@ -1,0 +1,15 @@
+.main-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  main {
+    flex-grow: 1;
+    margin-top: 1rem; /* Ajuste opcional para espaço entre header e main */
+    margin-bottom: 1rem; /* Ajuste opcional para espaço entre main e footer */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centraliza o conteúdo verticalmente se necessário */
+  }
+  

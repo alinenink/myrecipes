@@ -1,6 +1,6 @@
 <div class="flex flex-col items-center main-body min-h-screen bg-gray-50 dark:bg-gray-900 justify-between">
   <!-- Header -->
-  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+  <header id="header" class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
     <button
       class="absolute top-4 left-4 w-8 h-8 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-white transition-all"
       (click)="goBack()" title="Back">
@@ -76,7 +76,7 @@
         <div *ngFor="let ingredient of recipe.ingredients; let i = index; trackBy: trackByIndex"
           class="flex items-center gap-4">
           <input type="text" [(ngModel)]="recipe.ingredients[i]" name="ingredient-{{ i }}" class="retro-input w-full"
-            placeholder="Max: 10 chars" required maxlength="10" />
+            placeholder="Max: 50 chars" required maxlength="50" />
           <button *ngIf="recipe.ingredients.length > 1" type="button" class="retro-delete-btn-sm"
             (click)="removeIngredient(i)">
             <i class="fa fa-trash"></i>
@@ -95,7 +95,7 @@
         <div *ngFor="let step of recipe.instructions; let i = index; trackBy: trackByIndex"
           class="flex items-center gap-4">
           <textarea [(ngModel)]="recipe.instructions[i]" name="instruction-{{ i }}" rows="2" class="retro-input w-full"
-            placeholder="Enter step-by-step instructions" required>
+            placeholder="Add detailed instructions for this recipe" required>
           </textarea>
           <button *ngIf="recipe.instructions.length > 1" type="button" class="retro-delete-btn-sm"
             (click)="removeInstruction(i)">
@@ -118,7 +118,7 @@
 </div>
 
 <!-- Modal -->
-<div *ngIf="showModal" class="backdrop"></div>
+<div *ngIf="showModal || showModalInfo" class="backdrop"></div>
 <div *ngIf="showModal" class="retro-modal-success">
   <div class="retro-card">
     <span class="decorative-top-left"></span>
@@ -129,6 +129,63 @@
       <div class="button-group">
         <button class="retro-btn-modal" (click)="showModal = false">OK</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showModalInfo" class="retro-modal-success">
+  <div class="retro-card">
+    <span class="decorative-top-left"></span>
+    <span class="decorative-top-right"></span>
+    <div class="content">
+
+      <h3 class="text-center font-bold text-lg mb-4">Complete your details</h3>
+
+      <!-- Name Field -->
+      <div>
+        <label for="name" class="retro-label">Name <span class="text-red-500">*</span></label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="userName"
+          name="name"
+          class="retro-input"
+          placeholder="Enter your name"
+          required
+        />
+        <p *ngIf="!isValidName" class="text-red-500 text-xs mt-1">
+          Name must be at least 3 characters long.
+        </p>
+      </div>
+
+      <!-- Email Field -->
+      <div class="mt-4">
+        <label for="email" class="retro-label">Email <span class="text-red-500">*</span></label>
+        <input
+          id="email"
+          type="email"
+          [(ngModel)]="userEmail"
+          name="email"
+          class="retro-input"
+          placeholder="Enter your email"
+          required
+        />
+        <p *ngIf="!isValidEmail" class="text-red-500 text-xs mt-1">
+          Please enter a valid email address.
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group mt-6 flex justify-between">
+        <button class="retro-btn-cancel" (click)="showModalInfo = false">Cancel</button>
+        <button
+          class="retro-btn-save"
+          (click)="submitUserInfo()"
+        >
+          Confirm
+        </button>
+      </div>
+
     </div>
   </div>
 </div>

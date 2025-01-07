@@ -1,46 +1,5 @@
 [
   {
-    "id": "1",
-    "name": "Chocolate Cake",
-    "category": "Desserts",
-    "time": "60",
-    "servings": "8",
-    "ingredients": [
-      "2 cups of flour",
-      "1 cup of sugar",
-      "1/2 cup of cocoa powder"
-    ],
-    "instructions": [
-      "Mix dry ingredients.",
-      "Add eggs.",
-      "Bake."
-    ],
-    "image": "http://localhost:3000/images/cake.png",
-    "reviews": [
-      {
-        "user": "Alice",
-        "rating": 5,
-        "comment": "Amazing recipe!"
-      },
-      {
-        "user": "Bob",
-        "rating": 4,
-        "comment": "Too sweet for me."
-      },
-      {
-        "user": "Charlie",
-        "rating": 4.5,
-        "comment": "Perfect balance!"
-      },
-      {
-        "user": "Anonymous",
-        "rating": 5,
-        "comment": "Really good recipe!"
-      }
-    ],
-    "addedBy": "Aline Nink"
-  },
-  {
     "id": "2",
     "name": "Vanilla Ice Cream",
     "category": "Desserts",
@@ -190,5 +149,117 @@
       }
     ],
     "addedBy": "Oliver Brown"
+  },
+  {
+    "id": "4",
+    "name": "Spaghetti Bolognese",
+    "category": "Main Dishes",
+    "time": "50",
+    "servings": "6",
+    "ingredients": [
+      "500g spaghetti",
+      "2 cups of tomato sauce",
+      "500g ground beef"
+    ],
+    "instructions": [
+      "Cook pasta.",
+      "Prepare sauce with beef.",
+      "Combine and serve."
+    ],
+    "image": "http://localhost:3000/images/spaghetti.png",
+    "reviews": [
+      {
+        "user": "Ivy",
+        "rating": 5,
+        "comment": "Authentic and delicious!"
+      },
+      {
+        "user": "Jack",
+        "rating": 4.5,
+        "comment": "Loved the rich sauce."
+      },
+      {
+        "id": "1736255240329",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:07:20.329Z"
+      }
+    ],
+    "addedBy": "Mary Johnson",
+    "feature": "true"
+  },
+  {
+    "id": "13",
+    "name": "Beef Stroganoff",
+    "category": "Main Dishes",
+    "time": "60",
+    "servings": "6",
+    "ingredients": [
+      "500g beef strips",
+      "1 cup of cream",
+      "1 cup of mushrooms",
+      "1 onion",
+      "2 tbsp butter"
+    ],
+    "instructions": [
+      "Cook beef with onion.",
+      "Add mushrooms and cream.",
+      "Simmer for 20 minutes.",
+      "Serve with rice or pasta."
+    ],
+    "image": "http://localhost:3000/images/beefStroganoff.png",
+    "reviews": [
+      {
+        "user": "Noah",
+        "rating": 5,
+        "comment": "Perfect comfort food!"
+      },
+      {
+        "user": "Olivia",
+        "rating": 4,
+        "comment": "A bit heavy but tasty!"
+      },
+      {
+        "id": "1736255271616",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:07:51.616Z"
+      },
+      {
+        "id": "1736255339610",
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAAAAAAAAA",
+        "createdAt": "2025-01-07T13:08:59.610Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "createdAt": "2025-01-07T13:18:38.016Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:23:11.407Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "AAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:28:22.450Z"
+      },
+      {
+        "user": "Anonymous",
+        "rating": 5,
+        "comment": "Teste final aaaaaaaaaaa",
+        "createdAt": "2025-01-07T13:28:43.506Z"
+      }
+    ],
+    "addedBy": "Lucas Brown",
+    "feature": "true"
   }
 ]

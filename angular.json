@@ -17,26 +17,15 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "docs",
+            "outputPath": "dist/my-recipes",
             "index": "src/index.html",
-            "baseHref": "/myrecipes/",
             "main": "src/main.ts",
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
-            "inlineStyleLanguage": "sass",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "public",
-                "output": "/"
-              }
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/assets/styles.scss",
-              "src/assets/custom-theme.scss",
-              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              "src/assets/custom-theme.scss"
             ],
             "scripts": []
           },
@@ -46,43 +35,32 @@
               "outputHashing": "all",
               "sourceMap": false,
               "namedChunks": false,
+              "aot": true,
               "extractLicenses": true,
-              "baseHref": "/myrecipes/",
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kb",
-                  "maximumError": "8kb"
-                }
-              ]
+              "vendorChunk": false,
+              "buildOptimizer": true
             },
             "development": {
               "optimization": false,
-              "outputHashing": "none",
               "sourceMap": true,
               "namedChunks": true,
               "extractLicenses": false,
-              "watch": true
+              "vendorChunk": true
             }
-          },
-          "defaultConfiguration": "production"
+          }
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "my-recipes:build"
+            "port": 4200,
+            "host": "localhost"
           },
           "configurations": {
             "production": {
-              "browserTarget": "my-recipes:build:production"
+              "buildTarget": "my-recipes:build:production"
             },
             "development": {
-              "browserTarget": "my-recipes:build:development"
+              "buildTarget": "my-recipes:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -95,7 +73,6 @@
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
             "tsConfig": "tsconfig.spec.json",
-            "inlineStyleLanguage": "sass",
             "assets": ["src/favicon.ico", "src/assets"],
             "styles": [
               "src/assets/styles.scss",
