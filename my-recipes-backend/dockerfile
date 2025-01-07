@@ -1,20 +1,29 @@
-# Use uma imagem oficial do Node.js como base
+# Use a imagem oficial do Node.js como base
 FROM node:18-alpine
+
+# Define o ambiente como produção
+ENV NODE_ENV=production
 
 # Define o diretório de trabalho dentro do container
 WORKDIR /usr/src/app
 
-# Copia o arquivo package.json e package-lock.json
+# Copia os arquivos necessários para instalar dependências
 COPY package*.json ./
 
-# Instala as dependências
-RUN npm install
+# Instala as dependências de produção
+RUN npm ci --only=production
 
 # Copia o restante do código para o diretório de trabalho
 COPY . .
 
-# Expõe a porta que o backend usa (ajuste para a porta correta, por exemplo, 3000)
+# Cria um novo usuário não root para rodar o aplicativo
+RUN addgroup appgroup && adduser -S appuser -G appgroup
+
+# Define o usuário para rodar o aplicativo
+USER appuser
+
+# Exponha a porta que o backend usa
 EXPOSE 3000
 
 # Comando para iniciar o servidor
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

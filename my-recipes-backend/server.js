@@ -14,11 +14,18 @@ const favoritesFilePath = "./favorites.json";
 const profilePath = "./profile.json";
 const achievementsFilePath = "./achievements.json";
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Máximo de 100 requisições
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+
 // Middlewares
 app.use(bodyParser.json());
 app.use(cors());
-app.use("/images", express.static(path.join(__dirname, "images")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(limiter);
 
 // Utility functions
 const ensureFileExists = (filePath, defaultContent) => {
@@ -51,15 +58,18 @@ ensureFileExists(favoritesFilePath, []);
 ensureFileExists(profilePath, { photo: null });
 
 // Limite de 3 avaliações e receitas por dia por IP
-const recipeLimiter  = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000, // 24 horas
-  max: 3, // Máximo de 3 requisições
-  message: {
-    error: 'You have reached the daily limit for reviews. Please try again tomorrow.',
-  },
-  standardHeaders: true, // Retorna informações no header `RateLimit-*`
-  legacyHeaders: false, // Desativa cabeçalhos `X-RateLimit-*`
+const reviewLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  message: { error: "Daily limit for reviews reached. Try again tomorrow." },
 });
+
+const recipeLimiter = rateLimit({
+  windowMs: 24 * 60 * 60 * 1000,
+  max: 3,
+  message: { error: "Daily limit for recipe submissions reached. Try again tomorrow." },
+});
+
 
 // Profile Endpoints
 /**
@@ -221,7 +231,7 @@ app.delete("/recipes/:id", (req, res) => {
  * Add a review to a specific recipe
  * Returns the recipe ID after adding the review
  */
-app.post("/recipes/:recipeId/reviews", recipeLimiter , (req, res) => {
+app.post("/recipes/:recipeId/reviews", reviewLimiter , (req, res) => {
   const { recipeId } = req.params;
   const { user, rating, comment } = req.body;
 
