@@ -1,0 +1,134 @@
+<div class="flex flex-col items-center main-body min-h-screen bg-gray-50 dark:bg-gray-900 justify-between">
+  <!-- Header -->
+  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+    <button
+      class="absolute top-4 left-4 w-8 h-8 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-white transition-all"
+      (click)="goBack()" title="Back">
+      <i class="fa fa-arrow-left"></i>
+    </button>
+    <h1 class="text-3xl font-bold tracking-wide text-off-white text-shadow-rosy font-poppins">
+      {{ isEdit ? 'Edit Recipe' : 'Add Recipe' }}
+    </h1>
+  </header>
+
+  <!-- Form -->
+  <form #recipeForm="ngForm" class="flex-1 p-6 space-y-6 max-w-3xl retro-form" (ngSubmit)="saveRecipe(recipeForm)">
+    <!-- Upload Image -->
+    <div class="flex flex-col items-center">
+      <label *ngIf="!recipe.image" class="retro-upload-btn cursor-pointer">
+        <i class="fa fa-camera"></i>
+        <input type="file" class="hidden" (change)="onImageUpload($event)" />
+      </label>
+
+      <div *ngIf="recipe.image" class="relative">
+        <img [src]="recipe.image" alt="Preview" class="w-32 h-32 rounded-full shadow-lg" />
+        <button type="button" class="absolute top-0 right-0 retro-remove-btn" (click)="removeImage()"
+          title="Remove Image">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Recipe Name -->
+    <div>
+      <label for="name" class="retro-label">Recipe Name <span class="text-red-500">*</span></label>
+      <input id="name" type="text" [(ngModel)]="recipe.name" name="name" class="retro-input"
+        placeholder="Enter recipe name" required #name="ngModel" />
+      <p *ngIf="name.invalid && name.touched" class="text-red-500 text-sm mt-1">Recipe name is required.</p>
+    </div>
+
+    <!-- Category -->
+    <div>
+      <label for="category" class="retro-label">Category <span class="text-red-500">*</span></label>
+      <select id="category" [(ngModel)]="recipe.category" name="category" class="retro-input" required
+        #category="ngModel">
+        <option value="Desserts">Desserts</option>
+        <option value="Main Dishes">Main Dishes</option>
+        <option value="Appetizers">Appetizers</option>
+        <option value="Drinks">Drinks</option>
+        <option value="Healthy Options">Healthy Options</option>
+        <option value="Snacks">Snacks</option>
+      </select>
+      <p *ngIf="category.invalid && category.touched" class="text-red-500 text-sm mt-1">Category is required.</p>
+    </div>
+
+    <!-- Preparation Time and Servings -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div>
+        <label for="time" class="retro-label">Preparation Time (min) <span class="text-red-500">*</span></label>
+        <input id="time" type="number" [(ngModel)]="recipe.time" name="time" class="retro-input"
+          placeholder="Enter time in minutes" required min="1" max="1000" #time="ngModel" />
+        <p *ngIf="time.invalid && time.touched" class="text-red-500 text-sm mt-1">Enter a valid time (1-1000 min).</p>
+      </div>
+      <div>
+        <label for="servings" class="retro-label">Servings <span class="text-red-500">*</span></label>
+        <input id="servings" type="number" [(ngModel)]="recipe.servings" name="servings" class="retro-input"
+          placeholder="Max: 100 servings" required min="1" max="100" #servings="ngModel" />
+        <p *ngIf="servings.invalid && servings.touched" class="text-red-500 text-sm mt-1">Enter valid servings (1-100).
+        </p>
+      </div>
+    </div>
+
+    <!-- Ingredients -->
+    <div>
+      <label class="retro-label">Ingredients <span class="text-red-500">*</span></label>
+      <div class="space-y-2 mt-2">
+        <div *ngFor="let ingredient of recipe.ingredients; let i = index; trackBy: trackByIndex"
+          class="flex items-center gap-4">
+          <input type="text" [(ngModel)]="recipe.ingredients[i]" name="ingredient-{{ i }}" class="retro-input w-full"
+            placeholder="Max: 10 chars" required maxlength="10" />
+          <button *ngIf="recipe.ingredients.length > 1" type="button" class="retro-delete-btn-sm"
+            (click)="removeIngredient(i)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+        <button type="button" class="retro-add-btn mt-4" (click)="addIngredient()">
+          <i class="fa fa-plus"></i> Add Ingredient
+        </button>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div>
+      <label class="retro-label">Instructions <span class="text-red-500">*</span></label>
+      <div class="space-y-2 mt-2">
+        <div *ngFor="let step of recipe.instructions; let i = index; trackBy: trackByIndex"
+          class="flex items-center gap-4">
+          <textarea [(ngModel)]="recipe.instructions[i]" name="instruction-{{ i }}" rows="2" class="retro-input w-full"
+            placeholder="Enter step-by-step instructions" required>
+          </textarea>
+          <button *ngIf="recipe.instructions.length > 1" type="button" class="retro-delete-btn-sm"
+            (click)="removeInstruction(i)">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+        <button type="button" class="retro-add-btn mt-4" (click)="addInstruction()">
+          <i class="fa fa-plus"></i> Add Step
+        </button>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex justify-center gap-6 mt-8">
+      <button *ngIf="!isEdit" type="button" class="retro-btn-cancel" (click)="cancelAdd()">Cancel</button>
+      <button *ngIf="isEdit" type="button" class="retro-btn-cancel" (click)="goBack()">Back</button>
+      <button type="submit" class="retro-btn-save">Save</button>
+    </div>
+  </form>
+</div>
+
+<!-- Modal -->
+<div *ngIf="showModal" class="backdrop"></div>
+<div *ngIf="showModal" class="retro-modal-success">
+  <div class="retro-card">
+    <span class="decorative-top-left"></span>
+    <span class="decorative-top-right"></span>
+    <div class="content">
+      <i class="fa fa-exclamation-circle icon-warning "></i>
+      <h2 class="modal-title">{{ modalMessage }}</h2>
+      <div class="button-group">
+        <button class="retro-btn-modal" (click)="showModal = false">OK</button>
+      </div>
+    </div>
+  </div>
+</div>

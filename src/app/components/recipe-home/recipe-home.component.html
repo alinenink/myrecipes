@@ -1,0 +1,87 @@
+<div class="main-body min-h-screen bg-gray-5 flex flex-col">
+  <!-- Header -->
+  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+    <!-- Título Principal -->
+    <h1 class="header-title">My</h1>
+    <h2 class="header-subtitle">Recipes</h2>
+
+    <!-- Linha Decorativa com Ícone -->
+    <div class="decorative-elements">
+      <span class="decorative-line"></span>
+      <i class="fa fa-utensils decorative-icon"></i>
+      <span class="decorative-line"></span>
+    </div>
+  </header>
+
+
+  <!-- Main Content -->
+  <main class=" flex flex-col items-center mt-4">
+    <!-- Botão "Add Recipes" -->
+    <button
+      class="retro-btn flex items-center gap-4 px-8 py-4 border-4 rounded-full shadow-lg hover:scale-105 transition-all"
+      [routerLink]="['/add']">
+      <div
+        class="icon-container w-12 h-12 flex items-center justify-center bg-retro-yellow text-white rounded-full shadow">
+        <i class="fa fa-plus"></i>
+      </div>
+      <span class="text-retro-dark text-lg font-semibold tracking-wide">Add Recipes</span>
+    </button>
+
+    <!-- Cards -->
+    <div class="mb-2 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 w-full max-w-4xl px-4">
+      <!-- Card 1: Desserts -->
+      <button class="retro-card bg-pastel-pink" (click)="navigateTo('desserts')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-birthday-cake text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Desserts</span>
+      </button>
+      <div class="separator mobile-only"></div>
+
+      <!-- Card 2: Main Dishes -->
+      <button class="retro-card bg-pastel-yellow" (click)="navigateTo('Main Dishes')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-utensils text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Main Dishes</span>
+      </button>
+      <div class="separator mobile-only"></div>
+
+      <!-- Card 3: Appetizers -->
+      <button class="retro-card bg-pastel-green" (click)="navigateTo('appetizers')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-leaf text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Appetizers</span>
+      </button>
+      <div class="separator mobile-only"></div>
+      <div class="separator desktop-only"></div>
+
+      <!-- Card 4: Drinks -->
+      <button class="retro-card bg-pastel-blue" (click)="navigateTo('drinks')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-coffee text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Drinks</span>
+      </button>
+      <div class="separator mobile-only"></div>
+
+      <!-- Card 5: Healthy Options -->
+      <button class="retro-card bg-pastel-purple" (click)="navigateTo('Healthy Options')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-heart text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Healthy Options</span>
+      </button>
+      <div class="separator mobile-only"></div>
+
+      <!-- Card 6: Snacks -->
+      <button class="retro-card bg-pastel-orange" (click)="navigateTo('snacks')">
+        <span class="decorative-top-left"></span>
+        <span class="decorative-top-right"></span>
+        <i class="fa fa-apple-alt text-3xl mb-2"></i>
+        <span class="text-retro-dark font-semibold">Snacks</span>
+      </button>
+    </div>
+  </main>
+</div>

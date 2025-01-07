@@ -1,0 +1,73 @@
+<div class="main-body min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col justify-between">
+  <!-- Header -->
+  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+    <button
+      class="absolute top-4 left-4 w-8 h-8 flex items-center justify-center bg-white text-gray-800 rounded-full shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:text-white transition-all"
+     (click)="goBack()" title="Voltar">
+      <i class="fa fa-arrow-left"></i>
+    </button>
+    <h1
+      class="mt-4 flex flex-col items-center text-3xl font-bold tracking-wide text-off-white text-shadow-rosy font-poppins">
+      {{ recipe.name | titlecase }} Recipe Details
+    </h1>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow flex justify-center items-center p-12 space-y-6">
+    <div *ngIf="recipe" class="retro-card bg-pastel-blue max-w-2xl w-full p-6 space-y-6">
+      <div class="relative">
+        <img [src]="recipe.image || 'assets/default-recipe.jpg'" [alt]="recipe.name" class="rounded-lg object-cover" />
+      </div>
+      <div class="space-y-4">
+        <h1 class="text-2xl font-bold text-retro-dark">{{ recipe.name }}</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          <i class="fa fa-clock"></i> {{ recipe.time }} min |
+          <i class="fa fa-users"></i> {{ recipe.servings }} porções
+        </p>
+        <div class="rating-container flex items-center space-x-1">
+          <span class="text-retro-dark font-semibold">Média: {{ averageRating.toFixed(1) }}</span>
+          <div class="stars flex">
+            <ng-container *ngFor="let star of stars">
+              <i *ngIf="star === 'full'" class="fa-solid fa-star text-yellow-500 text-lg"></i>
+              <i *ngIf="star === 'half'" class="fa-solid fa-star-half-alt text-yellow-500 text-lg"></i>
+              <i *ngIf="star === 'empty'" class="fa-regular fa-star text-gray-300 text-lg"></i>
+            </ng-container>
+          </div>
+        </div>
+        <h3 class="text-lg font-bold text-retro-dark">Ingredients</h3>
+        <ul class="list-disc ml-5 space-y-1">
+          <li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li>
+        </ul>
+        <h3 class="text-lg font-bold text-retro-dark">Instructions</h3>
+        <ol class="list-decimal ml-5 space-y-1">
+          <li *ngFor="let instruction of recipe.instructions">{{ instruction }}</li>
+        </ol>
+      </div>
+
+      <!-- Avaliação -->
+      <div class="bg-pastel-yellow p-4 rounded-lg shadow-lg space-y-4">
+        <h3 class="text-lg font-bold text-retro-dark">Avaliação</h3>
+        <ul class="space-y-3">
+          <li *ngFor="let review of recipe.reviews" class="border-b border-gray-300 pb-2">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+              <strong>{{ review.user }}</strong>: {{ review.comment }}
+            </p>
+            <p class="text-sm text-yellow-500">
+              <i class="fa fa-star" *ngFor="let star of getStars(review.rating)"></i>
+            </p>
+          </li>
+        </ul>
+        <textarea [(ngModel)]="newComment" class="w-full border rounded p-2"
+          placeholder="Deixe seu comentário..."></textarea>
+        <div *ngIf="commentError" class="h-5 text-red-500 text-sm p-2">
+          O comentário deve ter no mínimo 10 caracteres.
+        </div>
+        <div class="flex items-center justify-between">
+          <input type="number" [(ngModel)]="newRating" min="1" max="5" class="w-16 border rounded p-2 text-center"
+            placeholder="Nota" />
+          <button class="retro-btn-sm" (click)="submitReview()">Enviar Avaliação</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

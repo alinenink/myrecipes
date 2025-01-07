@@ -1,0 +1,163 @@
+[
+    {
+      "name": "First Recipe",
+      "description": "Added your first recipe",
+      "unlocked": false,
+      "progress": 0,
+      "total": 1,
+      "icon": "fa-medal"
+    },
+    {
+      "name": "Recipe Master",
+      "description": "Added 10 recipes",
+      "unlocked": false,
+      "progress": 0,
+      "total": 10,
+      "icon": "fa-crown"
+    },
+    {
+      "name": "Sweet Specialist",
+      "description": "Desserts added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 5,
+      "icon": "fa-ice-cream"
+    },
+    {
+      "name": "Cake Enthusiast",
+      "description": "Cakes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 3,
+      "icon": "fa-birthday-cake"
+    },
+    {
+      "name": "Dessert Fanatic",
+      "description": "Dessert recipes favorited",
+      "unlocked": false,
+      "progress": 0,
+      "total": 7,
+      "icon": "fa-heart"
+    },
+    {
+      "name": "Dinner Expert",
+      "description": "Main dishes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 6,
+      "icon": "fa-utensils"
+    },
+    {
+      "name": "Grill Master",
+      "description": "Grilled dishes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 4,
+      "icon": "fa-fire"
+    },
+    {
+      "name": "Seasoned Chef",
+      "description": "Spicy recipes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 5,
+      "icon": "fa-pepper-hot"
+    },
+    {
+      "name": "Appetizer Artist",
+      "description": "Appetizers added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 6,
+      "icon": "fa-leaf"
+    },
+    {
+      "name": "Healthy Choice",
+      "description": "Healthy recipes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 5,
+      "icon": "fa-apple-alt"
+    },
+    {
+      "name": "Vegetarian Specialist",
+      "description": "Vegetarian recipes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 4,
+      "icon": "fa-seedling"
+    },
+    {
+      "name": "Fitness Guru",
+      "description": "Low-calorie recipes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 4,
+      "icon": "fa-running"
+    },
+    {
+      "name": "Snack Lover",
+      "description": "Snacks added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 6,
+      "icon": "fa-cookie"
+    },
+    {
+      "name": "Quick Bites",
+      "description": "Quick snacks added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 5,
+      "icon": "fa-clock"
+    },
+    {
+      "name": "Sweet Tooth",
+      "description": "Sweet snacks added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 4,
+      "icon": "fa-candy-cane"
+    },
+    {
+      "name": "Drink Enthusiast",
+      "description": "Drinks added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 5,
+      "icon": "fa-glass-cheers"
+    },
+    {
+      "name": "Coffee Connoisseur",
+      "description": "Coffee recipes added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 3,
+      "icon": "fa-coffee"
+    },
+    {
+      "name": "Smoothie Master",
+      "description": "Smoothies added",
+      "unlocked": false,
+      "progress": 0,
+      "total": 4,
+      "icon": "fa-blender"
+    },
+    {
+      "name": "Explorer",
+      "description": "Unique categories favorited",
+      "unlocked": false,
+      "progress": 0,
+      "total": 6,
+      "icon": "fa-globe"
+    },
+    {
+      "name": "Chef of the Year",
+      "description": "Recipes added in a year",
+      "unlocked": false,
+      "progress": 0,
+      "total": 20,
+      "icon": "fa-award"
+    }
+  ]
+  

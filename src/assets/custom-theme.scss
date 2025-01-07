@@ -1,0 +1,1451 @@
+// Custom Theming for Angular Material
+// Configuração de temas personalizados para o Angular Material
+// Mais informações: https://material.angular.io/guide/theming
+@use "@angular/material" as mat;
+
+// Importação de fontes personalizadas
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Dancing+Script:wght@400;600&display=swap");
+
+// Configuração básica do Tailwind CSS
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ===== Layout Geral ===== //
+
+/* Define a altura mínima da tela para elementos de layout */
+.min-h-screen {
+  min-height: 87vh;
+}
+
+/* Aplica o tema customizado do Angular Material à tag <html> */
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        // Define o tema claro
+        primary: mat.$azure-palette,
+        // Paleta principal (azul)
+        tertiary: mat.$blue-palette,
+        // Paleta terciária
+      ),
+      typography: Roboto,
+      // Define a fonte padrão como Roboto
+      density: 0,
+      // Define a densidade como padrão
+    )
+  );
+}
+
+/* Estilo de fundo do corpo principal da aplicação */
+.main-body {
+  background: linear-gradient(
+    180deg,
+    #eeeae3 0%,
+    #e3e1db 100%
+  ); // Gradiente suave de cores neutras
+}
+
+// ===== Tipografia e Estilos de Texto ===== //
+
+/* Título principal "Minhas" no cabeçalho */
+.header-title {
+  font-family: "Poppins", sans-serif; // Fonte estilosa e moderna
+  font-size: 1.5rem; // Tamanho médio para o título
+  color: #4a403a; // Cor marrom suave
+  letter-spacing: 1px; // Espaçamento entre letras
+  text-shadow: -1px -1px 0 #fff,
+    // Sombra clara acima
+    2px 2px 0 #d9b27c; // Sombra dourada abaixo
+}
+
+/* Subtítulo "Receitas" no cabeçalho */
+.header-subtitle {
+  line-height: 0.8; // Reduz o espaçamento entre linhas
+  font-family: "Dancing Script", cursive; // Fonte cursiva para um toque retrô
+  font-size: 5.5rem; // Tamanho grande para destaque
+  color: #4a403a; // Marrom suave
+  letter-spacing: 1px; // Espaçamento entre letras
+  text-shadow: -3px -3px 0 #fff,
+    // Sombra clara acima
+    3px 3px 0 #d9b27c; // Sombra dourada abaixo
+  margin-bottom: 2.5rem; // Espaço inferior para separar do restante
+}
+
+// ===== Estilos de Fundo ===== //
+
+/* Fundo com linhas verticais decorativas */
+.bg-vertical-lines {
+  background-color: #d5e8d4; // Fundo verde claro
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.05) 1px,
+    // Linhas verticais sutis
+    transparent 1px
+  );
+  background-size: 10px 100%; // Distância de 10px entre as linhas
+}
+
+// ===== Estilos de Texto e Sombras ===== //
+
+/* Texto com cor off-white */
+.text-off-white {
+  color: #f8f4e3; // Cor creme suave
+}
+
+/* Sombras rosadas em texto */
+.text-shadow-rosy {
+  text-shadow: 2px 2px 5px rgba(255, 182, 193, 0.6),
+    // Sombra rosada suave
+    2px 2px 5px rgba(0, 0, 0, 0.2); // Sombra de contraste escuro
+}
+
+/* Sombras maiores em texto */
+.text-shadow-rosy-large {
+  text-shadow: 3px 3px 7px rgba(255, 182, 193, 0.6),
+    // Sombra rosada maior
+    3px 3px 7px rgba(0, 0, 0, 0.3); // Contraste maior
+}
+
+/* Texto retrô escuro */
+.text-retro-dark {
+  color: #5c3d2e; // Marrom escuro suave
+}
+
+/* Gradiente de texto em tons de rosa e amarelo */
+.text-gradient-pink-to-yellow {
+  background: linear-gradient(
+    to right,
+    #f8c1c1,
+    #f8e0b4
+  ); /* Gradiente suave de rosa pastel para amarelo pastel */
+  -webkit-background-clip: text; /* Define o gradiente como texto */
+  color: transparent; /* Torna o fundo visível no texto */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1),
+    /* Sombra leve para profundidade */ 0px 0px 6px rgba(248, 193, 193, 0.4); /* Sombra colorida suave para destaque */
+  font-weight: bold; /* Enfatiza o texto */
+}
+
+/* Texto com destaque dourado ao passar o mouse */
+.hover\:text-retro-highlight:hover {
+  color: #d9a65f; // Destaque em tom dourado
+}
+
+// ===== Ícones em Tons Pastel ===== //
+
+.icon-pastel.text-blue {
+  color: #a8d5e2; // Azul pastel
+}
+
+.icon-pastel.text-pink {
+  color: #f8b4c0; // Rosa pastel
+}
+
+.icon-pastel.text-yellow {
+  color: #fbe5a2; // Amarelo pastel
+}
+
+.icon-pastel.text-green {
+  color: #b7dfb8; // Verde pastel
+}
+
+// ===== Fontes Globais ===== //
+
+/* Fonte padrão "Poppins" */
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Fonte decorativa "Dancing Script" */
+.font-dancing-script {
+  font-family: "Dancing Script", cursive;
+}
+
+// ===== Header Geral ===== //
+
+/* Estilo do cabeçalho principal */
+header {
+  position: relative; // Necessário para elementos posicionados dentro do header
+  background: linear-gradient(
+    to bottom,
+    #d5e8d4,
+    #f7f4e9
+  ); // Gradiente de verde para bege
+  padding: 2rem 0; // Espaçamento interno no topo e embaixo
+}
+
+// ===== Elementos Decorativos ===== //
+
+/* Contêiner centralizado para elementos decorativos */
+.decorative-elements {
+  display: flex; // Alinhamento em linha
+  align-items: center; // Centraliza verticalmente
+  justify-content: center; // Centraliza horizontalmente
+  margin-top: 1.5rem; // Espaço superior
+}
+
+/* Linha dourada decorativa */
+.decorative-line {
+  width: 60px; // Comprimento da linha
+  height: 2px; // Espessura da linha
+  background-color: #d9b27c; // Cor dourada
+  margin: 0 10px; // Espaço horizontal entre elementos
+}
+
+/* Ícone decorativo com estilo retrô */
+.decorative-icon {
+  font-size: 1.5rem; // Tamanho do ícone
+  color: #4a403a; // Marrom suave
+}
+
+// ===== Decorações com Animação de Pulsação ===== //
+
+/* Bolinhas animadas nas laterais superiores */
+.decorative-top-left,
+.decorative-top-right {
+  position: absolute; // Posicionamento fixo no elemento pai
+  width: 8px; // Largura
+  height: 8px; // Altura
+  background-color: #d9b27c; // Cor dourada
+  border-radius: 50%; // Torna o elemento circular
+  animation: pulse 1.5s infinite ease-in-out; // Animação de pulsação
+}
+
+/* Posição da bolinha superior esquerda */
+.decorative-top-left {
+  top: 10px;
+  left: 10px;
+}
+
+/* Posição da bolinha superior direita */
+.decorative-top-right {
+  top: 10px;
+  right: 10px;
+}
+
+// ===== Decorações Retrô ===== //
+
+/* Bolinhas retrô com borda dourada */
+.retro-decorative-top-left,
+.retro-decorative-top-right,
+.retro-decorative-bottom-left,
+.retro-decorative-bottom-right {
+  position: absolute; // Posicionamento fixo no elemento pai
+  width: 10px; // Largura
+  height: 10px; // Altura
+  background: #e5e0d9; // Fundo neutro pastel
+  border: 2px solid #d4af37; // Borda dourada
+  border-radius: 50%; // Formato circular
+}
+
+/* Posição das decorações retrô */
+.retro-decorative-top-left {
+  top: -6px;
+  left: -6px;
+}
+
+.retro-decorative-top-right {
+  top: -6px;
+  right: -6px;
+}
+
+.retro-decorative-bottom-left {
+  bottom: -6px;
+  left: -6px;
+}
+
+.retro-decorative-bottom-right {
+  bottom: -6px;
+  right: -6px;
+}
+
+/* Linha decorativa no topo */
+.top-decorative-line {
+  height: 6px; // Espessura
+  width: 100%; // Largura total
+  background: repeating-linear-gradient(
+    45deg,
+    var(--retro-yellow, #ffcf5e),
+    var(--retro-yellow, #ffcf5e) 10px,
+    var(--retro-pink, #f8b4b4) 10px,
+    var(--retro-pink, #f8b4b4) 20px
+  ); // Gradiente com repetição em diagonal
+}
+
+// ===== Decorações Adicionais ===== //
+
+/* Novas decorações superiores */
+.decorative-top-left-new,
+.decorative-top-right-new {
+  position: absolute; // Posição fixa
+  width: 16px; // Tamanho maior que os anteriores
+  height: 16px;
+  background-color: #f7e4d0; // Fundo pastel claro
+  border: 2px solid #e2c6ac; // Borda pastel suave
+  border-radius: 50%; // Circular
+}
+
+/* Posição das novas decorações */
+.decorative-top-left-new {
+  top: -8px;
+  left: -8px;
+}
+
+.decorative-top-right-new {
+  top: -8px;
+  right: -8px;
+}
+
+// ===== Animação de Pulsação ===== //
+
+/* Animação para elementos com pulsação */
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px #d4af37; // Sombra suave no início e fim
+  }
+  50% {
+    box-shadow: 0 0 15px #d4af37; // Sombra mais intensa no meio
+  }
+}
+
+/* Botão retrô */
+.retro-btn {
+  background-color: #fff7e6;
+  border: 4px double #d9b27c;
+  border-radius: 9999px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.retro-btn:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Ícones no botão */
+.icon-container {
+  background-color: #f3c677;
+  border-radius: 9999px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Separadores padrão */
+.separator {
+  height: 2px;
+  background-color: #d9b27c; /* Linha dourada */
+  margin: 1rem 0;
+}
+
+/* Exibição apenas no modo mobile */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+/* Responsividade */
+@media (min-width: 640px) {
+  /* Tamanho de tela para desktop (sm) */
+  .mobile-only {
+    display: none;
+  }
+
+  .desktop-only {
+    display: block;
+    grid-column: span 3; /* O separador ocupa a linha inteira */
+    margin: 2rem 0; /* Mais espaçamento no modo desktop */
+  }
+}
+
+/* Cards retrô */
+.retro-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 4px solid transparent;
+  box-shadow: inset 0 0 0 2px #d9b27c, 4px 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative; /* Necessário para posicionar o botão favorito */
+  cursor: pointer;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@media screen and (max-width: 768px) {
+  .retro-card {
+    min-width: 20em;
+  }
+}
+
+.retro-card:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), inset 0 0 0 2px #d9a65f;
+}
+
+.retro-card i {
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2),
+    -2px -2px 5px rgba(255, 255, 255, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.retro-card:hover i {
+  transform: scale(1.1);
+}
+
+.image-container {
+  position: relative;
+  width: 175px;
+  height: 250px;
+  margin: 0 auto 1rem;
+  top: 35px;
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 12px; /* Ajuste a distância do topo */
+  right: 25px; /* Ajuste a distância da direita */
+  z-index: 30;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.8rem; /* Aumenta ligeiramente o tamanho */
+  color: #d9b27c; /* Cor padrão do coração vazio */
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.favorite-btn .fa-heart {
+  color: #ff4d4d; /* Cor do coração preenchido */
+}
+
+.favorite-btn .fa-regular.fa-heart {
+  color: #d9b27c; /* Cor do coração vazio */
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2); /* Destaque no hover */
+}
+
+.favorite-btn:focus {
+  outline: none; /* Remove borda padrão do botão */
+}
+
+.retro-btn-small {
+  padding: 0.5rem 1rem;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Animação de entrada */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animação de pulsação */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Cores pastel ajustadas */
+.bg-pastel-pink {
+  background-color: #ffe4e6; /* Rosa suave */
+}
+
+.bg-pastel-yellow {
+  background-color: #fff4cc; /* Amarelo claro */
+}
+
+.bg-pastel-green {
+  background-color: #e4f5dc; /* Verde menta suave */
+}
+
+.bg-pastel-blue {
+  background-color: #dbeaf7; /* Azul céu claro */
+}
+
+.bg-pastel-purple {
+  background-color: #e7d8f3; /* Roxo lavanda */
+}
+
+.bg-pastel-orange {
+  background-color: #fde4d0; /* Laranja pêssego */
+}
+
+/* Footer retrô */
+.bg-retro-footer {
+  background-color: #ece2d0;
+  border-top: 2px solid #d9b27c;
+}
+
+/* Estilo para Labels */
+.retro-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4a403a;
+  margin-bottom: 0.25rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Foco nos Inputs */
+.retro-input:focus {
+  border-color: #ffb347;
+  box-shadow: 0 0 10px #ffd699;
+}
+
+/* Botão de upload retrô */
+.retro-upload-btn {
+  width: 120px;
+  height: 120px;
+  background-color: #fff7e6;
+  border: 4px solid #d9b27c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d9b27c;
+  font-size: 1.5rem;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.retro-upload-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 4px 4px 10px rgba(217, 178, 124, 0.4);
+}
+
+/* Contêiner para a imagem carregada */
+.uploaded-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Imagem carregada */
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Botão de remoção */
+.remove-image-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.remove-image-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.remove-image-btn i {
+  font-size: 14px;
+}
+
+/* Campo de texto para o modo de preparo */
+textarea.retro-input {
+  background-color: #fff7e6;
+  border: 2px solid #d9b27c;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+  color: #6b4226;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+textarea.retro-input:focus {
+  outline: none;
+  border-color: #c08a4f;
+  box-shadow: 4px 4px 10px rgba(192, 138, 79, 0.4);
+}
+
+/* Botão adicionar passo */
+.retro-add-btn {
+  background-color: #fff7e6;
+  border: 2px solid #d9b27c;
+  color: #6b4226;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  font-family: "Poppins", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.retro-add-btn:hover {
+  background-color: #d9b27c;
+  color: #fff7e6;
+  transform: scale(1.05);
+}
+
+/* Botão remover passo */
+.retro-remove-btn {
+  background-color: #ffd5d5;
+  border: 2px solid #e77b7b;
+  color: #d9534f;
+  font-size: 1rem;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.retro-remove-btn:hover {
+  background-color: #e77b7b;
+  color: #ffffff;
+}
+
+/* Botões Cancelar e Salvar */
+.retro-btn {
+  width: auto;
+  min-width: 120px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.retro-btn-sm,
+.retro-cancel-btn-sm,
+.retro-delete-btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 8px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.retro-btn-sm {
+  background-color: #fff7e6;
+  border: 2px solid #d9b27c;
+  color: #d9b27c;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.retro-btn-sm:hover {
+  transform: scale(1.1);
+  box-shadow: 4px 4px 10px rgba(217, 178, 124, 0.4);
+}
+
+.retro-delete-btn-sm {
+  background-color: #ffe6e6;
+  border: 2px solid #e57373;
+  color: #e57373;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.retro-cancel-btn-sm {
+  background-color: #e6ffe8;
+  border: 2px solid #2e9b5e;
+  color: #77e573;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.retro-cancel-btn-sm:hover,
+.retro-delete-btn-sm:hover {
+  transform: scale(1.1);
+  box-shadow: 4px 4px 10px rgba(229, 115, 115, 0.4);
+}
+
+.retro-card img {
+  border-radius: 8px;
+  box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Inputs */
+/* Inputs */
+.retro-input {
+  width: 100%;
+  background-color: #fff7e6;
+  border: 2px solid #d9b27c;
+  border-radius: 12px;
+  padding: 0.75rem;
+  font-family: "Poppins", sans-serif;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none; /* Remove o estilo padrão do foco */
+}
+
+.retro-input:focus,
+.retro-input:hover {
+  border-color: #ffb347; /* Laranja pastel */
+  box-shadow: 0 0 8px #ffd699; /* Sombra suave com laranja pastel */
+  outline: none; /* Remove o estilo padrão azul do navegador */
+}
+
+/* Botão Cancel (Vazado) */
+.retro-btn-cancel {
+  background-color: #fdbfbf; /* Fundo transparente */
+  color: #ee4848; /* Cor do texto */
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 5px;
+  font-weight: bold;
+  border: 2px solid #ee4848; /* Borda vermelha pastel */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.retro-btn-cancel:hover {
+  background-color: #ff6b6b; /* Fundo vermelho no hover */
+  color: #fff; /* Texto branco no hover */
+  transform: scale(1.05);
+}
+
+/* Botão Save (Vazado) */
+.retro-btn-save {
+  background-color: #daead7; /* Fundo transparente */
+  color: #66b266; /* Cor do texto */
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 5px;
+  font-weight: bold;
+  border: 2px solid #66b266; /* Borda verde pastel */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.retro-btn-save:hover {
+  background-color: #66b266; /* Fundo verde no hover */
+  color: #fff; /* Texto branco no hover */
+  transform: scale(1.05);
+}
+
+/* Espaçamento entre os inputs */
+.ingredients-container {
+  gap: 1rem;
+}
+
+/* Hover no botão de exclusão */
+.retro-delete-btn:hover {
+  background-color: #ffd6d6;
+  transform: scale(1.1);
+}
+
+/* Grid adjustments for Tempo de Preparo and Porções */
+.grid {
+  display: grid;
+  gap: 2rem; /* Espaçamento consistente */
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr; /* Coluna única no mobile */
+}
+
+sm:grid-cols-2 {
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr); /* Duas colunas no desktop */
+  }
+}
+
+/* Fundo com gradiente */
+.form-container {
+  background: linear-gradient(to bottom, #fff7e6, #fdf2d9);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Borda vermelha para erro */
+.input-error {
+  border: 2px solid #d9534f;
+}
+
+/* Mensagem de erro */
+.error-message {
+  color: #d9534f;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+/* Responsividade e centralização */
+.form-wrapper {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+// footer
+
+/* Fundo do footer com detalhes retrô */
+.footer-decor {
+  background-color: #ece2d0;
+  border-top: 4px double #d9b27c; /* Linha dupla superior */
+  border-radius: 16px 16px 0 0; /* Bordas arredondadas no topo */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+}
+
+/* Botões do footer */
+.footer-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #5c3d2e;
+  font-size: 0.875rem; /* Tamanho do texto */
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer-btn i {
+  margin-bottom: 4px; /* Espaço entre o ícone e o texto */
+}
+
+.footer-btn:hover {
+  transform: scale(1.1); /* Leve aumento no hover */
+  color: #d9a65f; /* Dourado suave no hover */
+}
+
+/* Texto do footer */
+.footer-text {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.footer-btn::before {
+  content: "•";
+  color: #d9b27c; /* Dourado suave */
+  font-size: 1.2rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.footer-btn {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.footer-btn:hover {
+  transform: translateY(-4px);
+  color: #d9a65f; /* Dourado suave */
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro translúcido */
+  z-index: 50; /* Deve ser menor que o modal para o modal ficar acima */
+}
+
+.retro-modal-success {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100; /* Modal acima do backdrop */
+
+  .retro-card {
+    position: relative;
+    background-color: #fff7e6;
+    border: 4px solid #d9b27c;
+    border-radius: 12px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+    padding: 20px 30px;
+    max-width: 400px;
+    text-align: center;
+
+    .decorative-top-left,
+    .decorative-top-right {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: #d9b27c;
+      border-radius: 50%;
+    }
+
+    .decorative-top-left {
+      top: 8px;
+      left: 8px;
+    }
+
+    .decorative-top-right {
+      top: 8px;
+      right: 8px;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .icon-success {
+        font-size: 2rem;
+        color: #91c788;
+        margin-bottom: 12px;
+      }
+
+      .modal-title {
+        font-family: "Dancing Script", cursive;
+        font-size: 1.5rem;
+        color: #8b5e34;
+        margin-bottom: 20px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 16px;
+
+        .retro-btn-modal {
+          background-color: #91c788;
+          border: 2px solid #6f9957;
+          padding: 10px 20px;
+          border-radius: 8px;
+          color: #fff;
+          font-weight: bold;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+
+          &:hover {
+            background-color: #6f9957;
+          }
+        }
+
+        .retro-delete-btn {
+          background-color: #e74c3c;
+          border: 2px solid #c0392b;
+          padding: 10px 20px;
+          border-radius: 8px;
+          color: #fff;
+          font-weight: bold;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: all 0.2s ease-in-out;
+
+          &:hover {
+            background-color: #c0392b;
+          }
+        }
+      }
+    }
+  }
+
+  .icon-warning {
+    font-size: 2rem;
+    color: #f9e79f;
+    margin-bottom: 12px;
+  }
+}
+
+/** tela detail */
+
+.recipe-detail-container {
+  padding: 2rem;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recipe-header {
+  text-align: center;
+}
+
+.recipe-image img {
+  border-radius: 12px;
+  border: 2px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.evaluation-section {
+  background-color: #fff8e7;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.comment-box {
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.comment-box:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.5rem;
+  resize: none;
+  font-family: inherit;
+}
+
+textarea:focus {
+  border-color: #ffc107;
+  outline: none;
+  box-shadow: 0 0 4px #ffd54f;
+}
+
+button.send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #f5a623;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+button.send-btn:hover {
+  transform: scale(1.05);
+  background-color: #f39c12;
+}
+
+.rating-stars {
+  font-size: 1.2rem;
+  color: #ffc107;
+  margin-top: 0.5rem;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rating-container .stars i {
+  margin-right: 4px;
+  font-size: 1.25rem;
+  color: #fcd34d; /* Cor amarela para as estrelas */
+}
+
+.stars {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.fa-star {
+  font-size: 1.5rem;
+  color: #ffc107;
+}
+
+.fa-star.fa-regular {
+  color: #e0e0e0; /* Cor para estrelas vazias */
+}
+
+.h-5 {
+  max-width: 14em;
+  position: relative;
+  bottom: 1.8em;
+}
+
+.detail-button-container {
+  text-align: center;
+  margin-top: -20px;
+  z-index: 20;
+}
+
+.retro-detail-btn {
+  padding: 0.5rem 1rem;
+  background-color: #f39c12;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+.retro-detail-btn:hover {
+  background-color: #e67e22;
+  transform: scale(1.05);
+}
+
+.flex .fa-star {
+  margin-right: 2px;
+}
+
+.flex .fa-star:last-child {
+  margin-right: 0;
+}
+
+.retro-card h2 {
+  margin: 0.5rem 0;
+  font-family: "Poppins", sans-serif;
+}
+
+.retro-card p {
+  margin: 0;
+}
+
+// profile
+
+.bg-retro-card {
+  background: linear-gradient(to bottom, #fefcf3, #f4f1eb);
+  border: 2px solid #e5d8a8;
+}
+
+.profile-container {
+  background: #e7d8f3;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Photo */
+.profile-photo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-photo {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+  border: 6px solid #e7d8f3;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: #333;
+}
+/* Retro Style for Achievements Section */
+.achievements {
+  padding: 1rem 0;
+}
+
+.achievement {
+  position: relative;
+  background: linear-gradient(to bottom, #fffdf4, #f8f1e7);
+  border: 2px solid #e5e0d9;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.achievement .achievement-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto;
+  background: #fef8e7;
+  border-radius: 50%;
+  border: 2px solid #e5e0d9;
+}
+
+.achievement .achievement-icon i {
+  line-height: 60px;
+}
+
+.achievement.border-gold {
+  border-color: #d4af37;
+}
+
+/* Carousel */
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  padding: 1.5em;
+}
+
+.carousel-container {
+  justify-content: center;
+  display: flex;
+}
+
+.carousel-hint {
+  animation: fadeInOut 2s infinite;
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.carousel-navigation {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  pointer-events: none; /* Permite que a interação aconteça no carrossel */
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  background: #e0e0e0;
+  border-radius: 0.75rem;
+  height: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar-filled {
+  height: 100%;
+  background: #ffd700;
+  border-radius: 0.75rem;
+  text-align: center;
+  line-height: 1.5rem;
+  font-weight: bold;
+}
+
+/* Ícones e texto */
+.recipe-thumbnail img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Espaço ao redor do texto */
+.recipe-thumbnail p {
+  margin-top: 0.5rem;
+  text-align: center;
+  color: var(--retro-dark, #4b3f3f);
+}
+
+/* Shadow leve para destaque */
+.recipe-thumbnail .image-container {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Transição e bordas suaves */
+.image-container img {
+  border-radius: 0.5rem;
+  transition: border-radius 0.3s ease;
+}
+
+.image-container {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+/* Estilo do texto */
+.recipe-text h4 {
+  font-family: "Poppins", sans-serif;
+  margin: 0.25rem 0 0.15rem;
+  color: var(--retro-dark, #4b3f3f);
+}
+
+.recipe-text p {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  color: var(--retro-dark, #4b3f3f);
+  opacity: 0.8;
+}
+
+/* Transição e ajuste no hover */
+.recipe-thumbnail:hover .recipe-text p {
+  color: var(--retro-yellow, #ae7b02);
+  transition: color 0.3s ease;
+}
+
+/* Estilo para a nova versão retrô */
+.retro-card-enhanced {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  background: var(--pastel-cream, #fdf5e6);
+}
+
+.retro-card-enhanced:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo do texto */
+.recipe-text {
+  padding: 10px;
+  font-family: "Poppins", sans-serif;
+}
+
+.recipe-text h4 {
+  margin: 0;
+  color: var(--retro-dark, #4b3f3f);
+}
+
+/* Estilo do texto para "Click to view details" */
+.recipe-text p {
+  margin: 5px 0 0;
+  font-family: "Roboto", sans-serif;
+  color: var(--retro-dark, #4b3f3f);
+  opacity: 0.8;
+  text-decoration: underline; /* Adiciona underline ao texto */
+  cursor: pointer; /* Define o cursor como pointer */
+}
+
+/* Estilo de hover para "Click to view details" */
+.recipe-text p:hover {
+  color: var(--retro-dark-hover, #ae7b02); /* Cor mais escura para o hover */
+  opacity: 1;
+  text-decoration: underline; /* Mantém o underline */
+  transition: color 0.3s ease, opacity 0.3s ease; /* Animação suave */
+}
+
+/* Botão retrô exclusivo */
+.retro-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff8e7;
+  border: 2px solid #e6be8a;
+  border-radius: 12px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: #e6be8a;
+  padding: 0.5rem 1.2rem;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+/* Ícone do botão */
+.retro-edit-btn i {
+  font-size: 16px;
+  margin-right: 0.5rem;
+  color: #e6be8a;
+}
+
+/* Efeito de hover */
+.retro-edit-btn:hover {
+  background: #fdeecf;
+  color: #d4a76b;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Efeito de foco */
+.retro-edit-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px 2px #e6be8a;
+}
+
+/* Efeito ativo */
+.retro-edit-btn:active {
+  transform: translateY(1px);
+  box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Sombra sutil ao redor */
+.retro-edit-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Estilos básicos para o novo card retrô */
+.retro-card-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background-color: #fff7e6; /* Fundo pastel */
+  border: 4px solid transparent;
+  box-shadow: inset 0 0 0 2px #d9b27c, 4px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.retro-card-new:hover {
+  transform: scale(1.02); /* Leve aumento no hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Sombra mais forte no hover */
+  border: 4px solid transparent;
+  box-shadow: inset 0 0 0 2px #d9b27c, 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.retro-card-new h3 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #5c3d2e; /* Marrom retrô */
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.retro-card-new p {
+  font-size: 1rem;
+  color: #6b5b53; /* Cinza suave */
+  margin: 0;
+}
+
+/* Ícones em cores pastel */
+.icon-pastel {
+  color: var(--pastel-icon-color, #8e9aaf);
+  transition: color 0.2s ease-in-out;
+}
+
+.retro-card-new:hover .icon-pastel {
+  color: #6d6a75; /* Tom pastel mais escuro no hover */
+}

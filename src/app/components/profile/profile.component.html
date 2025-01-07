@@ -1,0 +1,165 @@
+<div class="main-body min-h-screen bg-gradient-to-b from-beige to-pastel-cream">
+  <header class="relative w-full bg-green-100 bg-vertical-lines text-center py-8 shadow-md">
+    <h1 class="text-2xl font-bold tracking-wide text-off-white text-shadow-rosy font-poppins">
+      Profile
+    </h1>
+  </header>
+
+  <main class="flex-grow flex flex-col justify-center items-center p-6">
+    <div *ngFor="let profile of profile" class="relative m-4 retro-card max-w-2xl bg-pastel-blue">
+
+      <span class="decorative-top-left"></span>
+      <span class="decorative-top-right"></span>
+      <div class="relative">
+        <img [src]="profile.image" alt="Profile Photo" class="rounded-lg object-cover" />
+      </div>
+      <div class="space-y-4">
+        <h2 class="text-2xl font-bold text-retro-dark">{{ profile.name }}</h2>
+        <p class="text-retro-dark text-base italic mt-2">{{ profile.bio }}</p>
+      </div>
+
+      <div class="mt-6 flex items-center justify-center px-4 py-2">
+        <button class="retro-detail-btn" title="Ver Detalhes" (click)="openEditProfileModal()">
+          <i class="fa fa-edit mr-2"></i>
+
+          Editar </button>
+      </div>
+    </div>
+
+
+    <div class="stats-container grid grid-cols-1 gap-4 mt-4 max-w-2xl w-full">
+
+      <div class="retro-card-new">
+        <div class="icon-container">
+          <i class="fa fa-utensils text-3xl icon-pastel text-blue"></i>
+        </div>
+
+        <div class="text-right">
+          <h3>{{ recipesCreated }}</h3>
+          <p>Recipes Created</p>
+        </div>
+      </div>
+
+      <div class="retro-card-new">
+        <div class="icon-container">
+          <i class="fa fa-heart text-3xl icon-pastel text-pink"></i>
+        </div>
+        <div class="text-right">
+          <h3>{{ favorites }}</h3>
+          <p>Favorites</p>
+        </div>
+      </div>
+
+      <div class="retro-card-new">
+
+        <div class="icon-container">
+          <i class="fa fa-users text-3xl icon-pastel text-yellow"></i>
+        </div>
+        <div class="text-right">
+          <h3>{{ followers }}</h3>
+          <p>Followers</p>
+        </div>
+      </div>
+
+      <div class="retro-card-new">
+        <div class="icon-container">
+          <i class="fa fa-user-plus text-3xl icon-pastel text-green"></i>
+        </div>
+        <div class="text-right">
+          <h3>{{ following }}</h3>
+          <p>Following</p>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Achievements Section -->
+    <div class="achievements mt-6 max-w-2xl w-full p-6 space-y-6">
+      <h4 class="text-md font-bold text-retro-dark mb-4 text-center">Achievements</h4>
+
+      <div class="carousel-hint flex justify-center items-center text-gray-500 text-xs mb-2">
+        <i class="fa fa-hand-point-right mr-1"></i>
+        <span>Arraste para o lado para ver mais</span>
+      </div>
+
+      <div class="carousel-container relative">
+        <div class="carousel flex overflow-x-auto space-x-4">
+          <div *ngFor="let achievement of achievements"
+            class="achievement retro-card flex-shrink-0 w-56 p-6 relative bg-white shadow-lg rounded-lg"
+            [ngClass]="{ 'border-gold': achievement.unlocked }">
+            <span class="decorative-top-left"></span>
+            <span class="decorative-top-right"></span>
+            <div class="achievement-icon flex justify-center items-center mb-4">
+              <i class="fa text-3xl" [class]="achievement.icon"
+                [ngClass]="achievement.unlocked ? 'text-retro-yellow' : 'text-gray-400'"></i>
+            </div>
+            <div class="text-center">
+              <p class="text-sm font-semibold text-retro-dark mb-2">{{ achievement.name }}</p>
+              <p class="text-xs text-gray-500">
+                {{ achievement.progress || 0 }}/{{ achievement.total || 0 }} {{ achievement.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="recipes mt-6 max-w-2xl w-full p-6 space-y-6">
+      <h4 class="text-md font-bold text-retro-dark mb-4 text-center">Your Recipes</h4>
+      <div class="carousel-hint flex justify-center items-center text-gray-500 text-xs mb-2">
+        <i class="fa fa-hand-point-right mr-1"></i>
+        <span>Arraste para o lado para ver mais</span>
+      </div>
+
+      <div class="carousel-container relative">
+        <div class="carousel flex overflow-x-auto space-x-6">
+
+          <div *ngFor="let recipe of displayedRecipes"
+            class="recipe-thumbnail retro-card-enhanced relative flex-shrink-0 w-44 rounded-lg overflow-hidden shadow-md">
+            <div class="top-decorative-line"></div>
+            <img [src]="recipe.image" alt="{{ recipe.name }}" class="rounded-t-lg w-full h-40 object-cover" />
+            <div class="recipe-text p-3 bg-pastel-cream text-center border-t-4 border-retro-yellow">
+              <h1 class="text-1xl font-bold text-retro-dark">
+                {{ recipe.name }}
+              </h1>
+              <p class=" mt-4 text-xs text-gray-600 italic hover:text-retro-yellow transition duration-200"
+                (click)="viewAllRecipes(recipe.id)">
+                Click to view details
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div *ngIf="showModal" class="backdrop"></div>
+<div *ngIf="showModal" class="retro-modal-success">
+  <div class="retro-card">
+    <span class="decorative-top-left"></span>
+    <span class="decorative-top-right"></span>
+    <div class="content">
+
+      <div>
+        <label for="name" class="retro-label">Nome <span class="text-red-500">*</span></label>
+        <input id="name" type="text" [(ngModel)]="profile[0].name" name="name" class="retro-input" disabled />
+      </div>
+
+      <div>
+        <label for="email" class="retro-label">E-mail <span class="text-red-500">*</span></label>
+        <input id="email" type="text" [(ngModel)]="profile[0].email" name="email" class="retro-input" disabled />
+      </div>
+
+      <div>
+        <label for="bio" class="retro-label">Bio <span class="text-red-500">*</span></label>
+        <input id="bio" type="text" [(ngModel)]="profile[0].bio" name="bio" class="retro-input" disabled />
+      </div>
+      <div class="button-group mt-4">
+        <button class="retro-btn-modal" (click)="showModal = false">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
