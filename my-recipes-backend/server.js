@@ -12,24 +12,47 @@ const PORT = process.env.PORT || 3000;
 const isProduction = process.env.NODE_ENV === "production";
 const baseDir = isProduction ? path.join("/", "tmp") : __dirname;
 
-// Garantir que o diretório base exista em produção
-if (isProduction && !fs.existsSync(baseDir)) {
-  fs.mkdirSync(baseDir, { recursive: true });
-}
+// Caminhos dos arquivos originais
+const originalFilePath = path.join(__dirname, "recipes.json");
+const originalFavoritesFilePath = path.join(__dirname, "favorites.json");
+const originalProfilePath = path.join(__dirname, "profile.json");
+const originalAchievementsFilePath = path.join(__dirname, "achievements.json");
 
-// Caminhos dos arquivos JSON
+// Caminhos para arquivos na pasta base (pode ser /tmp em produção)
 const filePath = path.join(baseDir, "recipes.json");
 const favoritesFilePath = path.join(baseDir, "favorites.json");
 const profilePath = path.join(baseDir, "profile.json");
 const achievementsFilePath = path.join(baseDir, "achievements.json");
 
-// Funções utilitárias para arquivos
-const ensureFileExists = (filePath, defaultContent) => {
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify(defaultContent, null, 2), "utf8");
+// Função para copiar arquivos para a pasta de destino
+const copyFileToTemp = (sourcePath, destPath, defaultContent) => {
+  try {
+    if (!fs.existsSync(destPath)) {
+      if (fs.existsSync(sourcePath)) {
+        fs.copyFileSync(sourcePath, destPath);
+        console.log(`Arquivo copiado para ${destPath}`);
+      } else {
+        fs.writeFileSync(destPath, JSON.stringify(defaultContent, null, 2), "utf8");
+        console.log(`Arquivo criado em ${destPath}`);
+      }
+    }
+  } catch (err) {
+    console.error(`Erro ao copiar/criar arquivo ${destPath}:`, err);
   }
 };
 
+// Garantir que o diretório base exista em produção
+if (isProduction && !fs.existsSync(baseDir)) {
+  fs.mkdirSync(baseDir, { recursive: true });
+}
+
+// Copiar ou criar arquivos na pasta base
+copyFileToTemp(originalFilePath, filePath, []);
+copyFileToTemp(originalFavoritesFilePath, favoritesFilePath, []);
+copyFileToTemp(originalProfilePath, profilePath, { photo: null });
+copyFileToTemp(originalAchievementsFilePath, achievementsFilePath, []);
+
+// Funções utilitárias para manipulação de arquivos
 const readFile = (filePath) => {
   try {
     const data = fs.readFileSync(filePath, "utf8");
@@ -47,12 +70,6 @@ const writeFile = (filePath, data) => {
     console.error(`Erro ao escrever no arquivo ${filePath}:`, err);
   }
 };
-
-// Garantir que os arquivos necessários existam
-ensureFileExists(filePath, []);
-ensureFileExists(favoritesFilePath, []);
-ensureFileExists(profilePath, { photo: null });
-ensureFileExists(achievementsFilePath, []);
 
 // Configuração de CORS
 const allowedOrigins = [
@@ -85,9 +102,10 @@ const recipeLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 horas
   max: 3, // Máximo de 3 requisições
   message: {
-    error: "You have reached the daily limit for inserts. Please try again tomorrow.",
+    error: "You have reached the daily limit for recipes. Please try again tomorrow.",
   },
 });
+
 
 // Profile Endpoints
 /**
