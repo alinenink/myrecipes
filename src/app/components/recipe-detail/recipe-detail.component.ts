@@ -95,6 +95,7 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   submitReview(): void {
+    this.loading = true;
     if (!this.newComment || this.newComment.trim().length < 10) {
       this.commentError = true;
       return;
