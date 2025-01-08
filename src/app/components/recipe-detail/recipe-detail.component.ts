@@ -118,6 +118,7 @@ export class RecipeDetailComponent implements OnInit {
         this.newRating = 5;
       },
       error: (err) => {
+        this.loading = false;
         this.openErrorModal(err.error.error);
         console.error('Erro ao enviar avaliação:', err);
       },
