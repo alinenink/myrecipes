@@ -35,7 +35,6 @@ const corsOptions = {
 app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(limiter);
 app.use(cors());
 
 // Utility functions
