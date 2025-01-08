@@ -8,31 +8,22 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// File paths
-const filePath = "./recipes.json";
-const favoritesFilePath = "./favorites.json";
-const profilePath = "./profile.json";
-const achievementsFilePath = "./achievements.json";
-const allowedOrigins = [
-  "http://localhost:4200", // Localhost (Frontend)
-  "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
-  "https://alinenink.github.io",
-];
+// Configuração de diretórios para produção e desenvolvimento
+const isProduction = process.env.NODE_ENV === "production";
+const baseDir = isProduction ? path.join("/", "tmp") : __dirname;
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // Permitir cookies, se necessário
-};
+// Garantir que o diretório base exista em produção
+if (isProduction && !fs.existsSync(baseDir)) {
+  fs.mkdirSync(baseDir, { recursive: true });
+}
 
-// Utility functions
+// Caminhos dos arquivos JSON
+const filePath = path.join(baseDir, "recipes.json");
+const favoritesFilePath = path.join(baseDir, "favorites.json");
+const profilePath = path.join(baseDir, "profile.json");
+const achievementsFilePath = path.join(baseDir, "achievements.json");
+
+// Funções utilitárias para arquivos
 const ensureFileExists = (filePath, defaultContent) => {
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, JSON.stringify(defaultContent, null, 2), "utf8");
@@ -57,27 +48,45 @@ const writeFile = (filePath, data) => {
   }
 };
 
-// Ensure necessary files exist
+// Garantir que os arquivos necessários existam
 ensureFileExists(filePath, []);
 ensureFileExists(favoritesFilePath, []);
 ensureFileExists(profilePath, { photo: null });
+ensureFileExists(achievementsFilePath, []);
 
+// Configuração de CORS
+const allowedOrigins = [
+  "http://localhost:4200", // Localhost (Frontend)
+  "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
+  "https://alinenink.github.io",
+];
 
-app.options("*", cors(corsOptions));
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // Permitir cookies, se necessário
+};
+
+app.options("*", cors(corsOptions)); // Suporte a requisições pré-flight
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json({ limit: "500mb" }));
+app.use(express.urlencoded({ limit: "500mb", extended: true }));
 
-// Limite de 3 avaliações e receitas por dia por IP
+// Limite de requisições
 const recipeLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 horas
   max: 3, // Máximo de 3 requisições
   message: {
-    error:
-      "You have reached the daily limit for reviews. Please try again tomorrow.",
+    error: "You have reached the daily limit for inserts. Please try again tomorrow.",
   },
-  standardHeaders: true, // Retorna informações no header `RateLimit-*`
-  legacyHeaders: false, // Desativa cabeçalhos `X-RateLimit-*`
 });
 
 // Profile Endpoints

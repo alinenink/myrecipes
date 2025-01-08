@@ -16,6 +16,9 @@ RUN npm ci --only=production
 # Copia o restante do código para o diretório de trabalho
 COPY . .
 
+# Cria o diretório /tmp em produção
+RUN mkdir -p /tmp && chown -R node:node /tmp
+
 # Cria um novo usuário não root para rodar o aplicativo
 RUN addgroup appgroup && adduser -S appuser -G appgroup
 
