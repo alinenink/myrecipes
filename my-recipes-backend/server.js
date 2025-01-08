@@ -32,11 +32,6 @@ const corsOptions = {
   credentials: true, // Permitir cookies, se necessário
 };
 
-app.options("*", cors(corsOptions));
-app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(cors());
-
 // Utility functions
 const ensureFileExists = (filePath, defaultContent) => {
   if (!fs.existsSync(filePath)) {
@@ -66,6 +61,12 @@ const writeFile = (filePath, data) => {
 ensureFileExists(filePath, []);
 ensureFileExists(favoritesFilePath, []);
 ensureFileExists(profilePath, { photo: null });
+
+
+app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+app.use(cors());
 
 // Limite de 3 avaliações e receitas por dia por IP
 const recipeLimiter = rateLimit({
@@ -299,25 +300,30 @@ app.get("/favorites", (req, res) => {
  * POST /favorites
  * Add a recipe to favorites
  */
-app.post("/favorites", (req, res) => {
-  const { id } = req.body;
-  if (!id) {
+app.post("/favorites/:recipeId", (req, res) => {
+  const { recipeId } = req.params;
+  if (!recipeId) {
     return res.status(400).json({ error: "ID da receita é obrigatório" });
   }
 
   const recipes = readFile(filePath);
-  const recipe = recipes.find((r) => r.id === id);
+  const recipe = recipes.find((r) => r.id === recipeId);
   if (!recipe) {
     return res.status(404).json({ error: "Receita não encontrada" });
   }
 
   const favorites = readFile(favoritesFilePath);
-  if (favorites.some((fav) => fav.id === id)) {
+  if (favorites.some((fav) => fav.id === recipeId)) {
     return res.status(400).json({ error: "Receita já está nos favoritos" });
   }
 
+  
   favorites.push(recipe);
+  console.log(favorites);
+
   writeFile(favoritesFilePath, favorites);
+  console.log(favorites);
+
   res.status(201).json({ success: true, data: recipe });
 });
 

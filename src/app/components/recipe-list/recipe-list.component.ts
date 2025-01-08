@@ -207,23 +207,10 @@ export class RecipeListComponent implements OnInit {
     recipe.isFavorite = !currentFavoriteState;
   
     if (recipe.isFavorite) {
-      this.recipeService.getRecipeById(recipe.id).subscribe({
-        next: (fullRecipe) => {
-          console.log(fullRecipe);
-  
-          // Remove o campo `image` antes de enviar ao backend
-          const { image, ...recipeWithoutImage } = fullRecipe;
-  
-          this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
-            next: () => console.log(`${fullRecipe.name} favoritado!`),
-            error: (err) => {
-              console.error(`Erro ao favoritar ${fullRecipe.name}:`, err);
-              recipe.isFavorite = currentFavoriteState;
-            },
-          });
-        },
+      this.recipeService.addToFavorites(recipe.id).subscribe({
+        next: () => console.log(`${recipe.id} favoritado!`),
         error: (err) => {
-          console.error(`Erro ao buscar receita completa:`, err);
+          console.error(`Erro ao favoritar ${recipe.id}:`, err);
           recipe.isFavorite = currentFavoriteState;
         },
       });
