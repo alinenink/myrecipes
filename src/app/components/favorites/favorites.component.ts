@@ -111,7 +111,7 @@ export class FavoritesComponent implements OnInit {
     this.recipeService.getRecipes().subscribe({
       next: (data: any[]) => {
         this.recipes = data;
-        this.loading = false;
+        this.stopLoading();
       },
     });
   }
@@ -172,12 +172,12 @@ export class FavoritesComponent implements OnInit {
       this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
         next: () => {
           console.log(`${recipe.name} favoritada!`);
-          this.loading = false;
+          this.stopLoading();
         },
         error: (err) => {
           console.error(`Erro ao favoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
-          this.loading = false;
+          this.stopLoading();
         },
       });
     } else {
@@ -185,15 +185,21 @@ export class FavoritesComponent implements OnInit {
         next: () => {
           console.log(`${recipe.name} desfavoritada!`);
           this.loadFavorites(); // Atualiza a lista de favoritos
-          this.loading = false;
+          this.stopLoading();
         },
         error: (err) => {
           console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
-          this.loading = false;
+          this.stopLoading();
         },
       });
     }
+  }
+
+  stopLoading() {
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000);
   }
 
   calculateAverageRating(recipe: any): number {
