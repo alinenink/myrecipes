@@ -1,8 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 const rateLimit = require("express-rate-limit");
-const sharp = require("sharp");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,15 +13,6 @@ const filePath = "./recipes.json";
 const favoritesFilePath = "./favorites.json";
 const profilePath = "./profile.json";
 const achievementsFilePath = "./achievements.json";
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Máximo de 100 requisições
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Middlewares
 const allowedOrigins = [
   "http://localhost:4200", // Localhost (Frontend)
   "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
@@ -40,12 +32,11 @@ const corsOptions = {
   credentials: true, // Permitir cookies, se necessário
 };
 
-app.options("*", cors(corsOptions)); // Para suportar requisições pré-flight
+app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(express.json({ limit: "500mb" }));
-app.use(express.urlencoded({ limit: "500mb", extended: true }));
 app.use(limiter);
+app.use(cors());
 
 // Utility functions
 const ensureFileExists = (filePath, defaultContent) => {
@@ -64,19 +55,11 @@ const readFile = (filePath) => {
   }
 };
 
-const fs = require("fs");
-const path = require("path");
-
-// Utilitário para escrita síncrona segura em arquivos
-const writeFileSyncAtomic = (filePath, data) => {
+const writeFile = (filePath, data) => {
   try {
-    const tempFilePath = `${filePath}.tmp`;
-    fs.writeFileSync(tempFilePath, JSON.stringify(data, null, 2), "utf8");
-    fs.renameSync(tempFilePath, filePath);
-    console.log(`Arquivo salvo com sucesso: ${filePath}`);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
   } catch (err) {
-    console.error(`Erro ao salvar o arquivo ${filePath}:`, err);
-    throw err;
+    console.error(`Erro ao escrever no arquivo ${filePath}:`, err);
   }
 };
 
@@ -86,18 +69,15 @@ ensureFileExists(favoritesFilePath, []);
 ensureFileExists(profilePath, { photo: null });
 
 // Limite de 3 avaliações e receitas por dia por IP
-const reviewLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  max: 3,
-  message: { error: "Daily limit for reviews reached. Try again tomorrow." },
-});
-
 const recipeLimiter = rateLimit({
-  windowMs: 24 * 60 * 60 * 1000,
-  max: 3,
+  windowMs: 24 * 60 * 60 * 1000, // 24 horas
+  max: 3, // Máximo de 3 requisições
   message: {
-    error: "Daily limit for recipe submissions reached. Try again tomorrow.",
+    error:
+      "You have reached the daily limit for reviews. Please try again tomorrow.",
   },
+  standardHeaders: true, // Retorna informações no header `RateLimit-*`
+  legacyHeaders: false, // Desativa cabeçalhos `X-RateLimit-*`
 });
 
 // Profile Endpoints
@@ -125,7 +105,7 @@ app.post("/profile", (req, res) => {
   }
 
   const profileData = { nome, email, bio, image };
-  fs.writeFileSyncAtomic(profilePath, JSON.stringify(profileData, null, 2), (err) => {
+  fs.writeFile(profilePath, JSON.stringify(profileData, null, 2), (err) => {
     if (err) {
       console.error("Erro ao salvar o perfil:", err);
       res.status(500).json({ error: "Erro ao salvar o perfil" });
@@ -208,7 +188,7 @@ app.post("/recipes", recipeLimiter, (req, res) => {
 
   // Adiciona a nova receita ao arquivo
   recipes.push(newRecipe);
-  writeFileSyncAtomic(filePath, recipes);
+  writeFile(filePath, recipes);
 
   res.status(201).json({ success: true, data: newRecipe });
 });
@@ -233,7 +213,7 @@ app.put("/recipes/:id", (req, res) => {
   recipes[recipeIndex] = { ...recipes[recipeIndex], ...updatedRecipe };
 
   // Salva as alterações no arquivo JSON
-  writeFileSyncAtomic(filePath, recipes);
+  writeFile(filePath, recipes);
 
   // Retorna a receita atualizada como resposta
   res.status(200).json({ success: true, data: recipes[recipeIndex] });
@@ -249,7 +229,7 @@ app.delete("/recipes/:id", (req, res) => {
   if (recipes.length === updatedRecipes.length) {
     return res.status(404).json({ error: "Recipe not found" });
   }
-  writeFileSyncAtomic(filePath, updatedRecipes);
+  writeFile(filePath, updatedRecipes);
   res.status(204).send();
 });
 
@@ -258,7 +238,7 @@ app.delete("/recipes/:id", (req, res) => {
  * Add a review to a specific recipe
  * Returns the recipe ID after adding the review
  */
-app.post("/recipes/:recipeId/reviews", reviewLimiter, (req, res) => {
+app.post("/recipes/:recipeId/reviews", recipeLimiter, (req, res) => {
   const { recipeId } = req.params;
   const { user, rating, comment } = req.body;
 
@@ -287,7 +267,7 @@ app.post("/recipes/:recipeId/reviews", reviewLimiter, (req, res) => {
   };
   recipe.reviews.push(newReview);
 
-  writeFileSyncAtomic(filePath, recipes);
+  writeFile(filePath, recipes);
 
   res.status(201).json({ recipeId: recipe.id });
 });
@@ -322,76 +302,39 @@ app.get("/favorites", (req, res) => {
  */
 app.post("/favorites", (req, res) => {
   const { id } = req.body;
-
   if (!id) {
-    console.error("Erro: ID da receita não fornecido.");
     return res.status(400).json({ error: "ID da receita é obrigatório" });
   }
 
-  // Lê as receitas do arquivo
   const recipes = readFile(filePath);
   const recipe = recipes.find((r) => r.id === id);
-
   if (!recipe) {
-    console.error(`Erro: Receita com ID ${id} não encontrada.`);
     return res.status(404).json({ error: "Receita não encontrada" });
   }
 
-  // Lê os favoritos do arquivo
   const favorites = readFile(favoritesFilePath);
-
-  // Verifica se o item já está nos favoritos
   if (favorites.some((fav) => fav.id === id)) {
-    console.error(`Erro: Receita com ID ${id} já está nos favoritos.`);
     return res.status(400).json({ error: "Receita já está nos favoritos" });
   }
 
-  // Adiciona a receita ao favoritos, copiando a imagem diretamente
-  const recipeToSave = { ...recipe };
-  favorites.push(recipeToSave);
-
-  try {
-    // Salva os favoritos no arquivo
-    writeFileSyncAtomic(favoritesFilePath, favorites);
-    console.log(`Receita com ID ${id} salva com sucesso nos favoritos.`);
-    res.status(201).json({ success: true, data: recipeToSave });
-  } catch (err) {
-    console.error("Erro ao salvar o arquivo favorites.json:", err);
-    res.status(500).json({ error: "Erro ao salvar favorito" });
-  }
+  favorites.push(recipe);
+  writeFile(favoritesFilePath, favorites);
+  res.status(201).json({ success: true, data: recipe });
 });
-
-
 
 /**
  * DELETE /favorites/:id
- * Remove uma receita dos favoritos pelo ID
+ * Remove a recipe from favorites
  */
 app.delete("/favorites/:id", (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ error: "ID é obrigatório para exclusão" });
+  const favorites = readFile(favoritesFilePath);
+  const updatedFavorites = favorites.filter((fav) => fav.id !== req.params.id);
+  if (favorites.length === updatedFavorites.length) {
+    return res.status(404).json({ error: "Favorito não encontrado" });
   }
-
-  try {
-    const favorites = readFile(favoritesFilePath);
-
-    const updatedFavorites = favorites.filter((fav) => fav.id !== id);
-
-    if (favorites.length === updatedFavorites.length) {
-      return res.status(404).json({ error: "Favorito não encontrado" });
-    }
-
-    writeFileSyncAtomic(favoritesFilePath, updatedFavorites);
-
-    res.status(200).json({ message: "Favorito removido com sucesso" });
-  } catch (err) {
-    console.error("Erro ao remover favorito:", err);
-    res.status(500).json({ error: "Erro ao remover favorito" });
-  }
+  writeFile(favoritesFilePath, updatedFavorites);
+  res.status(200).json({ message: "Favorito removido com sucesso" });
 });
-
 
 // Endpoint para obter todas as conquistas
 app.get("/achievements", (req, res) => {
