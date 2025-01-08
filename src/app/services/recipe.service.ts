@@ -99,8 +99,8 @@ export class RecipeService {
    * @param recipe Objeto contendo os dados da receita favorita.
    * @returns Observable com a resposta do backend.
    */
-  addToFavorites(recipe: any): Observable<any> {
-    return this.http.post<any>(this.apiUrlFav, recipe);
+  addToFavorites(id: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrlFav}/${id}`, id);
   }
 
   /**
