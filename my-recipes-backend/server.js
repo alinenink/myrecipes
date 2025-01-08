@@ -1,8 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const fs = require("fs");
-const path = require("path");
 const rateLimit = require("express-rate-limit");
 const sharp = require("sharp");
 
@@ -26,7 +24,7 @@ const limiter = rateLimit({
 const allowedOrigins = [
   "http://localhost:4200", // Localhost (Frontend)
   "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
-  "https://alinenink.github.io"
+  "https://alinenink.github.io",
 ];
 
 const corsOptions = {
@@ -66,11 +64,19 @@ const readFile = (filePath) => {
   }
 };
 
-const writeFile = (filePath, data) => {
+const fs = require("fs");
+const path = require("path");
+
+// Utilitário para escrita síncrona segura em arquivos
+const writeFileSyncAtomic = (filePath, data) => {
   try {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
+    const tempFilePath = `${filePath}.tmp`;
+    fs.writeFileSync(tempFilePath, JSON.stringify(data, null, 2), "utf8");
+    fs.renameSync(tempFilePath, filePath);
+    console.log(`Arquivo salvo com sucesso: ${filePath}`);
   } catch (err) {
-    console.error(`Erro ao escrever no arquivo ${filePath}:`, err);
+    console.error(`Erro ao salvar o arquivo ${filePath}:`, err);
+    throw err;
   }
 };
 
@@ -99,13 +105,21 @@ const recipeLimiter = rateLimit({
  * GET /profile
  * Retrieve profile data
  */
-app.get("/profile", (req, res) => {
+app.get("/favorites", (req, res) => {
   try {
-    const profileData = JSON.parse(fs.readFileSync(profilePath, "utf8"));
-    res.json(profileData);
+    console.log("Recebida requisição para obter favoritos");
+    const favorites = readFile(favoritesFilePath);
+
+    if (!Array.isArray(favorites)) {
+      console.error("Erro: dados de favoritos não são um array.");
+      return res.status(500).json({ error: "Erro ao carregar favoritos" });
+    }
+
+    console.log("Favoritos retornados com sucesso:", favorites.length, "itens");
+    res.json(favorites);
   } catch (err) {
-    console.error("Erro ao ler o perfil:", err);
-    res.status(500).json({ error: "Erro ao obter os dados do perfil" });
+    console.error("Erro ao obter favoritos:", err);
+    res.status(500).json({ error: "Erro ao carregar favoritos" });
   }
 });
 
@@ -119,7 +133,7 @@ app.post("/profile", (req, res) => {
   }
 
   const profileData = { nome, email, bio, image };
-  fs.writeFile(profilePath, JSON.stringify(profileData, null, 2), (err) => {
+  fs.writeFileSyncAtomic(profilePath, JSON.stringify(profileData, null, 2), (err) => {
     if (err) {
       console.error("Erro ao salvar o perfil:", err);
       res.status(500).json({ error: "Erro ao salvar o perfil" });
@@ -202,7 +216,7 @@ app.post("/recipes", recipeLimiter, (req, res) => {
 
   // Adiciona a nova receita ao arquivo
   recipes.push(newRecipe);
-  writeFile(filePath, recipes);
+  writeFileSyncAtomic(filePath, recipes);
 
   res.status(201).json({ success: true, data: newRecipe });
 });
@@ -227,7 +241,7 @@ app.put("/recipes/:id", (req, res) => {
   recipes[recipeIndex] = { ...recipes[recipeIndex], ...updatedRecipe };
 
   // Salva as alterações no arquivo JSON
-  writeFile(filePath, recipes);
+  writeFileSyncAtomic(filePath, recipes);
 
   // Retorna a receita atualizada como resposta
   res.status(200).json({ success: true, data: recipes[recipeIndex] });
@@ -243,7 +257,7 @@ app.delete("/recipes/:id", (req, res) => {
   if (recipes.length === updatedRecipes.length) {
     return res.status(404).json({ error: "Recipe not found" });
   }
-  writeFile(filePath, updatedRecipes);
+  writeFileSyncAtomic(filePath, updatedRecipes);
   res.status(204).send();
 });
 
@@ -281,7 +295,7 @@ app.post("/recipes/:recipeId/reviews", reviewLimiter, (req, res) => {
   };
   recipe.reviews.push(newReview);
 
-  writeFile(filePath, recipes);
+  writeFileSyncAtomic(filePath, recipes);
 
   res.status(201).json({ recipeId: recipe.id });
 });
@@ -335,12 +349,11 @@ app.post("/favorites", async (req, res) => {
 
   let compressedImage = "";
   if (recipe.image) {
-    // Extrai o Base64 e compacta
     const base64Data = recipe.image.replace(/^data:image\/\w+;base64,/, "");
     const buffer = Buffer.from(base64Data, "base64");
 
     const compressedBuffer = await sharp(buffer)
-      .resize({ width: 300 }) // Ajusta a largura
+      .resize({ width: 300 })
       .toBuffer();
 
     compressedImage = `data:image/jpeg;base64,${compressedBuffer.toString(
@@ -348,22 +361,22 @@ app.post("/favorites", async (req, res) => {
     )}`;
   }
 
-  // Adiciona a receita aos favoritos com a imagem compactada
   const recipeToSave = {
     ...recipe,
     image: compressedImage,
   };
 
   favorites.push(recipeToSave);
-  writeFile(favoritesFilePath, favorites);
 
-  res.status(201).json({ success: true, data: recipeToSave });
+  try {
+    writeFileSyncAtomic(favoritesFilePath, favorites);
+    res.status(201).json({ success: true, data: recipeToSave });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao salvar favorito" });
+  }
 });
 
-/**
- * DELETE /favorites/:id
- * Remove a recipe from favorites
- */
+
 /**
  * DELETE /favorites/:id
  * Remove uma receita dos favoritos pelo ID
@@ -376,27 +389,23 @@ app.delete("/favorites/:id", (req, res) => {
   }
 
   try {
-    // Lê os favoritos
     const favorites = readFile(favoritesFilePath);
 
-    // Filtra os favoritos para excluir o item com o ID correspondente
     const updatedFavorites = favorites.filter((fav) => fav.id !== id);
 
-    // Verifica se algum item foi realmente removido
     if (favorites.length === updatedFavorites.length) {
       return res.status(404).json({ error: "Favorito não encontrado" });
     }
 
-    // Atualiza o arquivo de favoritos
-    writeFile(favoritesFilePath, updatedFavorites);
+    writeFileSyncAtomic(favoritesFilePath, updatedFavorites);
 
-    // Retorna uma resposta de sucesso
     res.status(200).json({ message: "Favorito removido com sucesso" });
   } catch (err) {
     console.error("Erro ao remover favorito:", err);
     res.status(500).json({ error: "Erro ao remover favorito" });
   }
 });
+
 
 // Endpoint para obter todas as conquistas
 app.get("/achievements", (req, res) => {

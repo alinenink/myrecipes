@@ -75,6 +75,8 @@ export class RecipeFormComponent implements OnInit {
           console.error('Erro ao carregar receita:', err);
         },
       });
+    } else {
+      this.loading = false;
     }
 
     this.scrollToHeader();
