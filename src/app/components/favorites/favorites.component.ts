@@ -53,7 +53,6 @@ export class FavoritesComponent implements OnInit {
       headerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-  
 
   loadFavorites(): void {
     this.recipeService.getFavorites().subscribe({
@@ -150,64 +149,60 @@ export class FavoritesComponent implements OnInit {
     }
   }
 
-    // Exibe o modal de erro
-    openErrorModal(message: string) {
-      this.modalMessage = message;
-      this.showModalError = true;
-    }
-  
+  // Exibe o modal de erro
+  openErrorModal(message: string) {
+    this.modalMessage = message;
+    this.showModalError = true;
+  }
 
-    toggleFavorite(recipe: any): void {
-      if (!recipe || !recipe.id) {
-        console.error('Invalid recipe object.');
-        return;
-      }
-    
-      const previousState = recipe.isFavorite;
-      recipe.isFavorite = !recipe.isFavorite;
-    
-      if (recipe.isFavorite) {
-        // Remove o campo `image` do objeto antes de enviar
-        const { image, ...recipeWithoutImage } = recipe;
-    
-        this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
-          next: () => {
-            console.log(`${recipe.name} favoritada!`);
-          },
-          error: (err) => {
-            console.error(`Erro ao favoritar ${recipe.name}:`, err);
-            recipe.isFavorite = previousState;
-          },
-        });
-      } else {
-        this.recipeService.removeFromFavorites(recipe.id).subscribe({
-          next: () => {
-            console.log(`${recipe.name} desfavoritada!`);
-            this.loadFavorites(); // Atualiza a lista de favoritos
-          },
-          error: (err) => {
-            console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
-            recipe.isFavorite = previousState;
-          },
-        });
-      }
+  toggleFavorite(recipe: any): void {
+    if (!recipe || !recipe.id) {
+      console.error('Invalid recipe object.');
+      return;
     }
-    
+
+    const previousState = recipe.isFavorite;
+    recipe.isFavorite = !recipe.isFavorite;
+
+    if (recipe.isFavorite) {
+      // Remove o campo `image` do objeto antes de enviar
+      const { image, ...recipeWithoutImage } = recipe;
+
+      this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
+        next: () => {
+          console.log(`${recipe.name} favoritada!`);
+        },
+        error: (err) => {
+          console.error(`Erro ao favoritar ${recipe.name}:`, err);
+          recipe.isFavorite = previousState;
+        },
+      });
+    } else {
+      this.recipeService.removeFromFavorites(recipe.id).subscribe({
+        next: () => {
+          console.log(`${recipe.name} desfavoritada!`);
+          this.loadFavorites(); // Atualiza a lista de favoritos
+        },
+        error: (err) => {
+          console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
+          recipe.isFavorite = previousState;
+        },
+      });
+    }
+  }
 
   calculateAverageRating(recipe: any): number {
     if (!recipe.reviews || recipe.reviews.length === 0) {
       return 0;
     }
-  
+
     const totalRatings = recipe.reviews.reduce(
       (sum: number, review: any) => sum + review.rating,
       0
     );
-  
+
     return parseFloat((totalRatings / recipe.reviews.length).toFixed(1));
   }
-  
-  
 
   calculateStars(averageRating: number): string[] {
     const stars = [];

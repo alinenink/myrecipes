@@ -105,21 +105,13 @@ const recipeLimiter = rateLimit({
  * GET /profile
  * Retrieve profile data
  */
-app.get("/favorites", (req, res) => {
+app.get("/profile", (req, res) => {
   try {
-    console.log("Recebida requisição para obter favoritos");
-    const favorites = readFile(favoritesFilePath);
-
-    if (!Array.isArray(favorites)) {
-      console.error("Erro: dados de favoritos não são um array.");
-      return res.status(500).json({ error: "Erro ao carregar favoritos" });
-    }
-
-    console.log("Favoritos retornados com sucesso:", favorites.length, "itens");
-    res.json(favorites);
+    const profileData = JSON.parse(fs.readFileSync(profilePath, "utf8"));
+    res.json(profileData);
   } catch (err) {
-    console.error("Erro ao obter favoritos:", err);
-    res.status(500).json({ error: "Erro ao carregar favoritos" });
+    console.error("Erro ao ler o perfil:", err);
+    res.status(500).json({ error: "Erro ao obter os dados do perfil" });
   }
 });
 
