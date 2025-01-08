@@ -3,13 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { RecipeService } from '../../services/recipe.service';
 import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
+import { LoaderComponent } from '../loader/loader.component';
 
 @Component({
   standalone: true,
   selector: 'app-recipe-form',
   templateUrl: './recipe-form.component.html',
   styleUrls: ['./recipe-form.component.scss'],
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, LoaderComponent],
 })
 export class RecipeFormComponent implements OnInit {
   constructor(
@@ -55,6 +56,7 @@ export class RecipeFormComponent implements OnInit {
       image: '',
     },
   ];
+  loading = true;
 
   ngOnInit() {
     // Verifica se há um ID na rota para identificar "Editar"
@@ -66,6 +68,8 @@ export class RecipeFormComponent implements OnInit {
       this.recipeService.getRecipeById(this.recipeId).subscribe({
         next: (data) => {
           this.recipe = data; // Carrega os dados da receita existente
+          this.loadProfile();
+          
         },
         error: (err) => {
           console.error('Erro ao carregar receita:', err);
@@ -73,7 +77,6 @@ export class RecipeFormComponent implements OnInit {
       });
     }
 
-    this.loadProfile();
     this.scrollToHeader();
   }
 
@@ -88,6 +91,7 @@ export class RecipeFormComponent implements OnInit {
     this.recipeService.getProfileData().subscribe({
       next: (data) => {
         this.profile = data;
+        this.loading = false
       },
       error: (err) => {
         console.error('Erro ao carregar o perfil:', err);

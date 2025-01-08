@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
-const rateLimit = require('express-rate-limit');
+const rateLimit = require("express-rate-limit");
 const sharp = require("sharp");
 
 const app = express();
@@ -21,7 +21,6 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
-
 
 // Middlewares
 const allowedOrigins = [
@@ -45,8 +44,8 @@ const corsOptions = {
 app.options("*", cors(corsOptions)); // Para suportar requisições pré-flight
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(express.json({ limit: '500mb' }));
-app.use(express.urlencoded({ limit: '500mb', extended: true }));
+app.use(express.json({ limit: "500mb" }));
+app.use(express.urlencoded({ limit: "500mb", extended: true }));
 app.use(limiter);
 
 // Utility functions
@@ -89,9 +88,10 @@ const reviewLimiter = rateLimit({
 const recipeLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000,
   max: 3,
-  message: { error: "Daily limit for recipe submissions reached. Try again tomorrow." },
+  message: {
+    error: "Daily limit for recipe submissions reached. Try again tomorrow.",
+  },
 });
-
 
 // Profile Endpoints
 /**
@@ -207,7 +207,7 @@ app.post("/recipes", recipeLimiter, (req, res) => {
 });
 
 // PUT /recipes/:id
-app.put('/recipes/:id', (req, res) => {
+app.put("/recipes/:id", (req, res) => {
   const { id } = req.params; // ID da receita
   const updatedRecipe = req.body; // Novo objeto de receita enviado pelo cliente
 
@@ -219,7 +219,7 @@ app.put('/recipes/:id', (req, res) => {
 
   if (recipeIndex === -1) {
     // Caso a receita não seja encontrada
-    return res.status(404).json({ error: 'Recipe not found' });
+    return res.status(404).json({ error: "Recipe not found" });
   }
 
   // Substitui o objeto existente pelo novo
@@ -231,7 +231,6 @@ app.put('/recipes/:id', (req, res) => {
   // Retorna a receita atualizada como resposta
   res.status(200).json({ success: true, data: recipes[recipeIndex] });
 });
-
 
 /**
  * DELETE /recipes/:id
@@ -247,18 +246,19 @@ app.delete("/recipes/:id", (req, res) => {
   res.status(204).send();
 });
 
-
 /**
  * POST /recipes/:recipeId/reviews
  * Add a review to a specific recipe
  * Returns the recipe ID after adding the review
  */
-app.post("/recipes/:recipeId/reviews", reviewLimiter , (req, res) => {
+app.post("/recipes/:recipeId/reviews", reviewLimiter, (req, res) => {
   const { recipeId } = req.params;
   const { user, rating, comment } = req.body;
 
   if (!user || !rating || !comment) {
-    return res.status(400).json({ error: "All fields (user, rating, comment) are required." });
+    return res
+      .status(400)
+      .json({ error: "All fields (user, rating, comment) are required." });
   }
 
   const recipes = readFile(filePath);
@@ -272,7 +272,12 @@ app.post("/recipes/:recipeId/reviews", reviewLimiter , (req, res) => {
     recipe.reviews = [];
   }
 
-  const newReview = { user, rating, comment, createdAt: new Date().toISOString() };
+  const newReview = {
+    user,
+    rating,
+    comment,
+    createdAt: new Date().toISOString(),
+  };
   recipe.reviews.push(newReview);
 
   writeFile(filePath, recipes);
@@ -281,7 +286,7 @@ app.post("/recipes/:recipeId/reviews", reviewLimiter , (req, res) => {
 });
 
 // Endpoint para obter todas as receitas de um usuário específico
-app.get('/recipes/user/:username', (req, res) => {
+app.get("/recipes/user/:username", (req, res) => {
   const { username } = req.params;
 
   try {
@@ -290,11 +295,10 @@ app.get('/recipes/user/:username', (req, res) => {
 
     res.status(200).json(userRecipes); // Retorna as receitas do usuário
   } catch (err) {
-    console.error('Erro ao obter receitas por usuário:', err);
-    res.status(500).json({ error: 'Erro ao obter receitas por usuário' });
+    console.error("Erro ao obter receitas por usuário:", err);
+    res.status(500).json({ error: "Erro ao obter receitas por usuário" });
   }
 });
-
 
 // Favorites Endpoints
 /**
@@ -338,7 +342,9 @@ app.post("/favorites", async (req, res) => {
       .resize({ width: 300 }) // Ajusta a largura
       .toBuffer();
 
-    compressedImage = `data:image/jpeg;base64,${compressedBuffer.toString("base64")}`;
+    compressedImage = `data:image/jpeg;base64,${compressedBuffer.toString(
+      "base64"
+    )}`;
   }
 
   // Adiciona a receita aos favoritos com a imagem compactada
@@ -357,14 +363,38 @@ app.post("/favorites", async (req, res) => {
  * DELETE /favorites/:id
  * Remove a recipe from favorites
  */
+/**
+ * DELETE /favorites/:id
+ * Remove uma receita dos favoritos pelo ID
+ */
 app.delete("/favorites/:id", (req, res) => {
-  const favorites = readFile(favoritesFilePath);
-  const updatedFavorites = favorites.filter((fav) => fav.id !== req.params.id);
-  if (favorites.length === updatedFavorites.length) {
-    return res.status(404).json({ error: "Favorito não encontrado" });
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID é obrigatório para exclusão" });
   }
-  writeFile(favoritesFilePath, updatedFavorites);
-  res.status(200).json({ message: "Favorito removido com sucesso" });
+
+  try {
+    // Lê os favoritos
+    const favorites = readFile(favoritesFilePath);
+
+    // Filtra os favoritos para excluir o item com o ID correspondente
+    const updatedFavorites = favorites.filter((fav) => fav.id !== id);
+
+    // Verifica se algum item foi realmente removido
+    if (favorites.length === updatedFavorites.length) {
+      return res.status(404).json({ error: "Favorito não encontrado" });
+    }
+
+    // Atualiza o arquivo de favoritos
+    writeFile(favoritesFilePath, updatedFavorites);
+
+    // Retorna uma resposta de sucesso
+    res.status(200).json({ message: "Favorito removido com sucesso" });
+  } catch (err) {
+    console.error("Erro ao remover favorito:", err);
+    res.status(500).json({ error: "Erro ao remover favorito" });
+  }
 });
 
 // Endpoint para obter todas as conquistas
