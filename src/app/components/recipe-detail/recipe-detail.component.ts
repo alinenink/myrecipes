@@ -39,7 +39,7 @@ export class RecipeDetailComponent implements OnInit {
     if (recipeId) {
       this.loadRecipe(recipeId);
     }
-    this.scrollToHeader()
+    this.scrollToHeader();
   }
 
   scrollToHeader(): void {
@@ -134,7 +134,11 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   goBack() {
-    if (!this.category || (this.category && this.originRoute === 'profile')) {
+    if (
+      !this.category ||
+      (this.category &&
+        (this.originRoute === 'profile' || this.originRoute === 'favorites'))
+    ) {
       this.router.navigate([this.originRoute]);
     } else {
       this.router.navigate(['/details', this.category], {
@@ -143,10 +147,9 @@ export class RecipeDetailComponent implements OnInit {
     }
   }
 
-    // Exibe o modal de erro
-    openErrorModal(message: string) {
-      this.modalMessage = message;
-      this.showModal = true;
-    }
-  
+  // Exibe o modal de erro
+  openErrorModal(message: string) {
+    this.modalMessage = message;
+    this.showModal = true;
+  }
 }

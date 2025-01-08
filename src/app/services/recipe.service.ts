@@ -7,15 +7,15 @@ import { Observable } from 'rxjs';
 })
 export class RecipeService {
   // local
-  // private apiUrl = 'http://localhost:3000/recipes';
-  // private apiUrlFav = 'http://localhost:3000/favorites';
-  // private apiUrlProfile = 'http://localhost:3000/profile';
-  // private apiUrlAchivie = 'http://localhost:3000';
+  private apiUrl = 'http://localhost:3000/recipes';
+  private apiUrlFav = 'http://localhost:3000/favorites';
+  private apiUrlProfile = 'http://localhost:3000/profile';
+  private apiUrlAchivie = 'http://localhost:3000';
 
-  private apiUrl = 'https://myrecipes-x9jv.onrender.com/recipes';
-  private apiUrlFav = 'https://myrecipes-x9jv.onrender.com/favorites';
-  private apiUrlProfile = 'https://myrecipes-x9jv.onrender.com/profile';
-  private apiUrlAchivie = 'https://myrecipes-x9jv.onrender.com';
+  //private apiUrl = 'https://myrecipes-x9jv.onrender.com/recipes';
+  //private apiUrlFav = 'https://myrecipes-x9jv.onrender.com/favorites';
+  //private apiUrlProfile = 'https://myrecipes-x9jv.onrender.com/profile';
+  //private apiUrlAchivie = 'https://myrecipes-x9jv.onrender.com';
 
   constructor(private http: HttpClient) {}
 

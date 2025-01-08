@@ -156,6 +156,7 @@ export class FavoritesComponent implements OnInit {
   }
 
   toggleFavorite(recipe: any): void {
+    this.loading = true;
     if (!recipe || !recipe.id) {
       console.error('Invalid recipe object.');
       return;
@@ -171,10 +172,12 @@ export class FavoritesComponent implements OnInit {
       this.recipeService.addToFavorites(recipeWithoutImage).subscribe({
         next: () => {
           console.log(`${recipe.name} favoritada!`);
+          this.loading = false;
         },
         error: (err) => {
           console.error(`Erro ao favoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
+          this.loading = false;
         },
       });
     } else {
@@ -182,10 +185,12 @@ export class FavoritesComponent implements OnInit {
         next: () => {
           console.log(`${recipe.name} desfavoritada!`);
           this.loadFavorites(); // Atualiza a lista de favoritos
+          this.loading = false;
         },
         error: (err) => {
           console.error(`Erro ao desfavoritar ${recipe.name}:`, err);
           recipe.isFavorite = previousState;
+          this.loading = false;
         },
       });
     }
@@ -222,8 +227,8 @@ export class FavoritesComponent implements OnInit {
     return stars;
   }
 
-  viewDetails(id: string): void {
-    this.router.navigate(['/recipes', id], {
+  viewDetails(category: string, id: string): void {
+    this.router.navigate(['/recipes', category, id], {
       queryParams: { origin: 'favorites' },
     });
   }
