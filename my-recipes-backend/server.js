@@ -320,53 +320,47 @@ app.get("/favorites", (req, res) => {
  * POST /favorites
  * Add a recipe to favorites
  */
-app.post("/favorites", async (req, res) => {
+app.post("/favorites", (req, res) => {
   const { id } = req.body;
 
   if (!id) {
+    console.error("Erro: ID da receita não fornecido.");
     return res.status(400).json({ error: "ID da receita é obrigatório" });
   }
 
+  // Lê as receitas do arquivo
   const recipes = readFile(filePath);
   const recipe = recipes.find((r) => r.id === id);
 
   if (!recipe) {
+    console.error(`Erro: Receita com ID ${id} não encontrada.`);
     return res.status(404).json({ error: "Receita não encontrada" });
   }
 
+  // Lê os favoritos do arquivo
   const favorites = readFile(favoritesFilePath);
+
+  // Verifica se o item já está nos favoritos
   if (favorites.some((fav) => fav.id === id)) {
+    console.error(`Erro: Receita com ID ${id} já está nos favoritos.`);
     return res.status(400).json({ error: "Receita já está nos favoritos" });
   }
 
-  let compressedImage = "";
-  if (recipe.image) {
-    const base64Data = recipe.image.replace(/^data:image\/\w+;base64,/, "");
-    const buffer = Buffer.from(base64Data, "base64");
-
-    const compressedBuffer = await sharp(buffer)
-      .resize({ width: 300 })
-      .toBuffer();
-
-    compressedImage = `data:image/jpeg;base64,${compressedBuffer.toString(
-      "base64"
-    )}`;
-  }
-
-  const recipeToSave = {
-    ...recipe,
-    image: compressedImage,
-  };
-
+  // Adiciona a receita ao favoritos, copiando a imagem diretamente
+  const recipeToSave = { ...recipe };
   favorites.push(recipeToSave);
 
   try {
+    // Salva os favoritos no arquivo
     writeFileSyncAtomic(favoritesFilePath, favorites);
+    console.log(`Receita com ID ${id} salva com sucesso nos favoritos.`);
     res.status(201).json({ success: true, data: recipeToSave });
   } catch (err) {
+    console.error("Erro ao salvar o arquivo favorites.json:", err);
     res.status(500).json({ error: "Erro ao salvar favorito" });
   }
 });
+
 
 
 /**
