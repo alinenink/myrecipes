@@ -26,6 +26,7 @@ const limiter = rateLimit({
 const allowedOrigins = [
   "http://localhost:4200", // Localhost (Frontend)
   "https://myrecipes-x9jv.onrender.com", // Deploy (Frontend)
+  "https://alinenink.github.io"
 ];
 
 const corsOptions = {
